@@ -1,7 +1,7 @@
 /* REDLINE service worker
    Bump CACHE_VERSION whenever you deploy a change.
    Must match APP_VERSION inside index.html. */
-const CACHE_VERSION = '1.9.4';
+const CACHE_VERSION = '1.9.5';
 const CACHE_NAME = 'redline-v' + CACHE_VERSION;
 
 const PRECACHE = [

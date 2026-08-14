@@ -1339,7 +1339,7 @@ if(typeof module!=='undefined') module.exports = RZ;
 
 <!-- ================= APP (DOM) ================= -->
 <script>
-var APP_VERSION='1.9.4';
+var APP_VERSION='1.9.5';
 /* ---------- storage (localStorage w/ in-memory fallback) ---------- */
 var Store = (function(){
   var mem={}, ok=true;
@@ -2184,7 +2184,7 @@ function startRace(){
   go('race');
 }
 function beginTiming(){ R.startTs=performance.now(); R.running=true; loop();
-  if(R.segs[0]) setTimeout(function(){ if(R&&R.running) coachIntro(R.segs[0]); }, 250); }
+  setTimeout(function(){ if(R&&R.running) coachAnnounce(false); }, 250); }
 function elapsed(){ if(!R.running) return R.pauseAccum; return (R.paused? R.pauseStart : performance.now()) - R.startTs - R.pauseAccum; }
 function segStartCum(){ return R.idx>0 ? R.taps[R.idx-1] : 0; }
 
@@ -2296,17 +2296,16 @@ function tapTile(){
   beep(); buzz(30);
   // last split
   var lastSplit = e - segStartCum(); document.getElementById('subLast').textContent=RZ.fmt(lastSplit);
-  coachPush();
   R.idx++;
   if(R.isAmrap && R.idx>=R.segs.length){
     R.rounds++; R.idx=0; R.roundStart=e;
     beep(1046,.16); buzz(45); toast('Round '+R.rounds+' complete');
-    renderLiveSplits(); renderTile(); return;
+    renderLiveSplits(); renderTile(); coachAnnounce(); return;
   }
   renderLiveSplits();
   if(R.idx>=R.segs.length){ finishRace(); return; }
   renderTile();
-  setTimeout(function(){ if(R&&R.segs[R.idx]) coachIntro(R.segs[R.idx]); }, 900);
+  coachAnnounce();
 }
 function undoTap(){
   if(!R) return;
@@ -2356,11 +2355,11 @@ function askStop(){
 }
 function closeOverlay(){ document.getElementById('overlay').className='overlay'; }
 function doStop(){ closeOverlay(); teardownRace(); go('home'); }
-function teardownRace(){ if(raf)cancelAnimationFrame(raf); raf=null; R=null; releaseWake(); document.getElementById('drawer').classList.remove('open'); }
+function teardownRace(){ if(raf)cancelAnimationFrame(raf); raf=null; announceToken++; stopSpeech(); vpStop(); stopClip(); R=null; releaseWake(); document.getElementById('drawer').classList.remove('open'); }
 
 /* ---------- finish ---------- */
 function finishRace(){
-  if(raf)cancelAnimationFrame(raf); raf=null; R.running=false; releaseWake(); coachFinish();
+  if(raf)cancelAnimationFrame(raf); raf=null; R.running=false; announceToken++; releaseWake(); coachFinish();
   var segments=[], prev=0;
   for(var i=0;i<Math.min(R.segs.length, R.taps.length);i++){ var cum=R.taps[i]; var sg=R.segs[i];
     var dist = (sg.type==='run'||sg.unit==='m') ? sg.value : null;
@@ -2842,10 +2841,12 @@ function vpUrl(name){
   return 'voice/'+name+'.mp3';
 }
 function vpHasFile(name){ return vpEmbedded() ? !!VPACK[name] : true; }
+var vpSeqToken=0;
 function vpPlaySeq(files, done){
   if(!files.length){ if(done) done(true); return; }
-  var i=0;
+  var i=0, myToken=++vpSeqToken;
   function next(){
+    if(myToken!==vpSeqToken) return;              // superseded by a newer announcement
     if(i>=files.length){ if(done) done(true); return; }
     var f=files[i++];
     if(!vpHasFile(f)){ next(); return; }
@@ -2860,7 +2861,7 @@ function vpPlaySeq(files, done){
   }
   next();
 }
-function vpStop(){ if(vpAudio){ try{ vpAudio.pause(); vpAudio.currentTime=0; }catch(e){} } }
+function vpStop(){ vpSeqToken++; if(vpAudio){ try{ vpAudio.pause(); vpAudio.currentTime=0; }catch(e){} } }
 function vpHasLine(mode,kind,i){
   return !!(vpOk && VP.counts && VP.counts[mode] && VP.counts[mode][kind] && i<VP.counts[mode][kind]);
 }
@@ -2965,8 +2966,9 @@ function say(text, opts){
     u.rate=Math.max(0.5, Math.min(1.6, (pack.rate||1)+vr));
     u.pitch=Math.max(0.3, Math.min(1.8, (pack.pitch||1)+vp));
     u.volume=1;
+    if(opts && opts.onend){ u.onend=opts.onend; u.onerror=opts.onend; }
     speechSynthesis.speak(u);
-  }catch(e){}
+  }catch(e){ if(opts&&opts.onend) opts.onend(); }
 }
 /* Engines run clauses together, which is most of what makes them sound robotic.
    Commas and ellipses buy breathing room, so add a little punctuation. */
@@ -2981,8 +2983,10 @@ function humanise(t){
 function stopSpeech(){ try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){} }
 function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
 function useExplicit(){ return !!(settings.explicit && settings.coach==='hard'); }
-function coachIntro(seg){
-  var pack=COACH[settings.coach]; if(!pack||!pack.intro) return;
+function coachIntro(seg, done){
+  done = done || function(){};
+  var pack=COACH[settings.coach];
+  if(!pack||!pack.intro||muted||settings.coach==='off'){ done(); return; }
   var label = seg.type==='run' ? 'Run' : seg.name;
   var detail = seg.type==='run' ? (seg.value+' metres')
     : (seg.unit==='reps' ? (seg.value+' reps')
@@ -2991,32 +2995,54 @@ function coachIntro(seg){
   if(settings.pack && vpOk){
     var files=vpIntroFiles(settings.coach, seg);
     if(files && files.length){ stopSpeech(); vpStop();
-      vpPlaySeq(files, function(okPlayed){ if(!okPlayed) say(pack.intro(label, detail, useExplicit()), {interrupt:true}); });
+      vpPlaySeq(files, function(okPlayed){
+        if(!okPlayed) say(pack.intro(label, detail, useExplicit()), {interrupt:true, onend:done});
+        else done();
+      });
       return; }
   }
-  say(pack.intro(label, detail, useExplicit()), {interrupt:true});
+  say(pack.intro(label, detail, useExplicit()), {interrupt:true, onend:done});
 }
 /* Prefer a real recorded clip when one exists; fall back to the device voice. */
-function speakLine(mode, kind, idx, text){
-  if(muted || !settings.coach || settings.coach==='off') return;
+function speakLine(mode, kind, idx, text, done){
+  done = done || function(){};
+  if(muted || !settings.coach || settings.coach==='off'){ done(); return; }
   var key=clipKey(mode, kind, idx);
-  if(hasClip(key)){ stopSpeech(); vpStop(); playClip(key, function(okPlayed){ if(!okPlayed) say(text); }); return; }
+  if(hasClip(key)){ stopSpeech(); vpStop();
+    playClip(key, function(okPlayed){ if(!okPlayed) say(text,{onend:done}); else done(); }); return; }
   if(settings.pack && vpHasLine(mode,kind,idx)){
     stopSpeech();
-    vpPlaySeq([mode+'-'+kind+'-'+idx], function(okPlayed){ if(!okPlayed) say(text); });
+    vpPlaySeq([mode+'-'+kind+'-'+idx], function(okPlayed){ if(!okPlayed) say(text,{onend:done}); else done(); });
     return;
   }
-  say(text, {interrupt:(kind==='intro')});
+  say(text, {interrupt:(kind==='intro'), onend:done});
 }
-function coachPush(){
-  var pack=COACH[settings.coach]; if(!pack||!pack.push) return;
+/* On every tap: say the next activity first, then follow it with a coach line.
+   The comment waits for the description to finish so they never overlap. */
+var announceToken=0;
+function coachAnnounce(withComment){
+  if(!R || !R.segs[R.idx]) return;
+  if(muted || !settings.coach || settings.coach==='off') return;
+  var seg=R.segs[R.idx], token=++announceToken, idxAt=R.idx;
+  coachIntro(seg, function(){
+    if(withComment===false) return;              // nothing finished yet to comment on
+    // a later tap supersedes this one, so drop a stale follow-up
+    if(token!==announceToken || !R || !R.running || R.idx!==idxAt) return;
+    setTimeout(function(){
+      if(token!==announceToken || !R || !R.running || R.idx!==idxAt) return;
+      coachPush();
+    }, 350);
+  });
+}
+function coachPush(done){
+  var pack=COACH[settings.coach]; if(!pack||!pack.push){ if(done) done(); return; }
   var lines=pack.push, kind='push';
   if(useExplicit() && pack.explicit){
     // explicit tier lands often without dominating
     if(Math.random()<0.5){ lines=pack.explicit; kind='explicit'; }
   }
   var i=Math.floor(Math.random()*lines.length);
-  speakLine(settings.coach, kind, i, lines[i]);
+  speakLine(settings.coach, kind, i, lines[i], done);
 }
 function coachFinish(){
   var pack=COACH[settings.coach]; if(!pack||!pack.finish) return;
