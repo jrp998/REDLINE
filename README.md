@@ -1,7 +1,5 @@
 # REDLINE
 
-> **IMPORTANT:** open REDLINE from your GitHub Pages **web address**, not by tapping the downloaded HTML file. Opening the single file directly means the `voice/` folder cannot be read, so the good neural coach voice is unavailable and your phone's robotic voice is used instead. Settings → Coach voice tells you which one is active.
-
 Hyrox / CrossFit / hybrid training timer. Big-tile tap-through splits, PB ghost pacer, workout generators, and a tap-to-build workout editor. Runs entirely offline, installs to your home screen like a native app.
 
 ---
@@ -14,7 +12,6 @@ Hyrox / CrossFit / hybrid training timer. Big-tile tap-through splits, PB ghost 
 ```
 index.html
 sw.js
-voice/            (266 mp3 files - the voice pack)
 manifest.json
 icon-192.png
 icon-512.png
@@ -25,7 +22,9 @@ favicon.png
 README.md
 ```
 
-   Easiest route: on the repo page choose **Add file → Upload files**, drag the whole lot in, then **Commit changes**.
+   All nine files sit in the repo root — there are **no folders**, so GitHub's *Add file → Upload files* works even if you have to pick the files individually. Select all nine, then **Commit changes**.
+
+   The coach audio (315 clips) is built into `index.html`, so there is nothing else to upload and it works offline straight away.
 
    > `.nojekyll` is a zero-byte file that stops GitHub from running Jekyll over the site. If your uploader drops it, create it manually with **Add file → Create new file**, name it `.nojekyll`, leave it empty, commit.
 
@@ -81,7 +80,7 @@ Devices also pick up updates on their own — the service worker fetches a fresh
 
 **Interval timer** — a big-screen work/rest timer. Preprogram sets (4 × 45s work, 15s rest), or use a plain countdown or stopwatch. Yellow while working, red during rest. Digits scale to fill the whole screen so you can read them from across a gym, with soft chime cues counting 3-2-1 and a distinct two-note tone at each change. Presets for Tabata, EMOM and more.
 
-**Built-in voice pack** — REDLINE ships with every coach line pre-rendered by a neural text-to-speech model (the `voice/` folder, about 3.6 MB). These play instead of your phone's robotic built-in voice, and are cached for offline use after the first play. If you record your own audio, that takes priority.
+**Built-in voice pack** — Every coach line is pre-rendered by a neural text-to-speech model and built directly into `index.html`. These play instead of your phone's robotic built-in voice, with no extra files and no network needed. If you record your own audio, that takes priority.
 
 **Coach voice** — optional spoken coaching. Pick it right on the pre-race screen under the loads row, or in Settings. *Goggins* is ruthless — it goes after the weak voice in your head rather than you — with an optional **No filter** switch that adds swearing and harsher call-outs; *Kind* is warm and encouraging. Both announce each movement with its reps or distance, then talk to you as you tap through. Mute instantly from the workout or timer screen.
 

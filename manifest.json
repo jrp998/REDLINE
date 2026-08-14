@@ -1,1 +1,17 @@
-{"version":"4.0","counts":{"hard":{"push":24,"explicit":14,"finish":4,"finishX":2},"kind":{"push":16,"finish":3}},"tails":{"hard":11,"kind":5},"names":{"Air Squats":"mv_air_squats","Back Squats":"mv_back_squats","Bent-Over Rows":"mv_bent_over_rows","Bike":"mv_bike","Box Jumps":"mv_box_jumps","Burpee Broad Jumps":"mv_burpee_broad_jumps","Burpees":"mv_burpees","Chest-to-Bar":"mv_chest_to_bar","Clean & Jerks":"mv_clean_jerks","DB Snatches":"mv_db_snatches","DB Thrusters":"mv_db_thrusters","Deadlifts":"mv_deadlifts","Double-Unders":"mv_double_unders","Farmers Carry":"mv_farmers_carry","Front Squats":"mv_front_squats","Goblet Squats":"mv_goblet_squats","Handstand Push-Ups":"mv_handstand_push_ups","Jump Squats":"mv_jump_squats","KB Swings":"mv_kb_swings","Mountain Climbers":"mv_mountain_climbers","Muscle-Ups":"mv_muscle_ups","Overhead Press":"mv_overhead_press","Overhead Squats":"mv_overhead_squats","Plank Hold":"mv_plank_hold","Power Cleans":"mv_power_cleans","Pull-Ups":"mv_pull_ups","Push-Ups":"mv_push_ups","Ring Dips":"mv_ring_dips","Romanian Deadlifts":"mv_romanian_deadlifts","Rope Climbs":"mv_rope_climbs","Row":"mv_row","Run":"mv_run","Sandbag Lunges":"mv_sandbag_lunges","Shuttle Runs":"mv_shuttle_runs","Sit-Ups":"mv_sit_ups","Ski Erg":"mv_ski_erg","Sled Pull":"mv_sled_pull","Sled Push":"mv_sled_push","Snatches":"mv_snatches","Split Squats":"mv_split_squats","Suitcase Carry":"mv_suitcase_carry","Thrusters":"mv_thrusters","Toes-to-Bar":"mv_toes_to_bar","Walking Lunges":"mv_walking_lunges","Wall Balls":"mv_wall_balls","Weighted Step-Ups":"mv_weighted_step_ups","Glute Bridges":"mv_glute_bridges","Calf Raises":"mv_calf_raises","Bike Intervals":"mv_bike_intervals"},"dists":[15,20,30,40,50,70,80,100,140,200,250,300,400,500,600,700,800,1000,1200,1600],"reps":[3,5,8,10,12,15,20,21,25,30,40,45,50,60,70,80,100,150,200,300],"sets":[2,3,4,5,6,8,10],"timer":{"sets":20}}
+{
+  "name": "REDLINE",
+  "short_name": "REDLINE",
+  "description": "Hyrox, CrossFit and hybrid training timer with splits, PBs and workout generators.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A0A0A",
+  "theme_color": "#0A0A0A",
+  "categories": ["health", "fitness", "sports"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
