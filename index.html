@@ -102,6 +102,30 @@ body{
 .stepper{display:flex; align-items:center; gap:10px;}
 .stepper button{width:52px; height:52px; border-radius:14px; border:1px solid var(--line); background:var(--panel2); color:var(--yellow); font-size:26px; font-weight:800; cursor:pointer; flex:none; line-height:1;}
 .stepper button:active{transform:scale(.94);}
+.packok,.packbad{border-radius:14px; padding:14px; margin:10px 0 4px; border:1px solid var(--line);}
+.packok{background:rgba(61,220,132,.10); border-color:var(--ahead);}
+.packbad{background:rgba(255,46,46,.10); border-color:var(--red);}
+.packok b,.packbad b{display:block; font-size:13.5px; margin-bottom:6px;}
+.packok b{color:var(--ahead);} .packbad b{color:var(--red);}
+.packok span,.packbad span{display:block; color:var(--mute); font-size:12px; line-height:1.55;}
+.lineItem{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:10px;}
+.lineItem.rec{border-color:var(--red); box-shadow:0 0 0 1px var(--red);}
+.lineItem.has{border-color:var(--yellow-dim);}
+.lineItem .lt{font-size:13.5px; line-height:1.45; margin-bottom:11px;}
+.lineItem .lb{display:flex; gap:8px; align-items:center;}
+.lineItem .lb button{flex:none; height:40px; padding:0 14px; border-radius:11px; border:1px solid var(--line);
+  background:var(--panel2); color:var(--white); font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; cursor:pointer;}
+.lineItem .lb button.recbtn{background:var(--red); border-color:var(--red); color:#fff;}
+.lineItem .lb button.recbtn.on{animation:recpulse 1s infinite;}
+@keyframes recpulse{0%,100%{opacity:1;}50%{opacity:.55;}}
+.lineItem .lb .tick{margin-left:auto; color:var(--yellow); font-size:11px; font-weight:800; letter-spacing:.1em;}
+.swaprow{display:flex; gap:10px;}
+.swapbtn{flex:1; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--panel2);
+  border:1px solid var(--line); color:var(--yellow); border-radius:14px; padding:14px 10px; font-size:13px;
+  font-weight:800; letter-spacing:.04em; text-transform:uppercase; cursor:pointer;}
+.swapbtn:active{transform:scale(.96); background:var(--yellow); color:#000; border-color:var(--yellow);}
+.swapbtn.dice{flex:0 0 62px;}
+.subgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; max-height:44dvh; overflow-y:auto; padding-right:2px;}
 .stepper input{flex:1; min-width:0; background:var(--panel2); border:1px solid var(--line); color:var(--white); border-radius:14px; padding:14px 6px; font-size:24px; text-align:center; font-variant-numeric:tabular-nums; font-weight:800;}
 .pill{display:inline-flex; align-items:center; gap:8px; background:var(--panel); border:1px solid var(--line);
   border-radius:999px; padding:9px 14px; font-size:12px; font-weight:700; letter-spacing:.05em; cursor:pointer; text-transform:uppercase;}
@@ -133,6 +157,45 @@ body{
 .delta small{display:block; font-size:9px; letter-spacing:.24em; color:var(--mute); font-weight:700; margin-bottom:4px;}
 .delta.ahead{color:var(--ahead);} .delta.behind{color:var(--behind); text-shadow: 0 0 16px rgba(255,46,46,.6), 0 0 32px rgba(255,46,46,.3);}
 
+/* ---- big timer stage ---- */
+#timerRun{padding:0;}
+.tmStage{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:calc(var(--safe-t) + 8px) 8px calc(var(--safe-b) + 10px); text-align:center; position:relative;
+  background:var(--yellow); color:#000; transition:background .25s ease; overflow:hidden;}
+.tmStage.rest{background:var(--red); color:#fff;}
+.tmStage.prep{background:#111; color:var(--yellow);}
+.tmStage.done{background:#0A0A0A; color:var(--yellow);}
+.tmClose{position:absolute; top:calc(var(--safe-t) + 14px); right:16px; width:46px; height:46px; border-radius:14px;
+  border:2px solid currentColor; background:transparent; color:inherit; font-size:20px; font-weight:800; cursor:pointer; opacity:.55;}
+.tmMute{position:absolute; top:calc(var(--safe-t) + 14px); left:16px; background:transparent; border-color:currentColor; color:inherit; opacity:.55;}
+.tmMute.on{color:inherit; border-color:currentColor; opacity:1;}
+.tmSet{font-family:var(--display); font-weight:400; font-size:clamp(22px,6.5vw,34px); letter-spacing:.06em; opacity:.8; min-height:26px;}
+.tmPhase{font-size:clamp(12px,3.4vw,16px); font-weight:800; letter-spacing:.34em; text-transform:uppercase; margin-top:4px; margin-bottom:2px; opacity:.7; line-height:1.2;}
+.tmNum{flex:1; width:100%; display:flex; align-items:center; justify-content:center; min-height:0; overflow:hidden;}
+.tmBig{font-family:var(--display); font-weight:400; line-height:.8; letter-spacing:-.02em; margin:0;
+  display:block; font-variant-numeric:tabular-nums;
+  font-size:min(52vh, 84vw);}                 /* 1 digit: as big as the screen allows */
+.tmBig.d2{font-size:min(50vh, 58vw);}          /* 2 digits */
+.tmBig.d3{font-size:min(38vh, 38vw);}          /* e.g. 5:00 */
+.tmBig.d4{font-size:min(32vh, 29vw);}          /* mm:ss */
+.tmBig.d5{font-size:min(25vh, 23vw);}
+.tmBig.word{font-size:min(26vh, 25vw); letter-spacing:.01em;}
+.tmStage.pulse .tmBig{animation:tmp .5s ease;}
+@keyframes tmp{0%{transform:scale(1.09);}100%{transform:scale(1);}}
+.tmMeta{font-size:clamp(11px,3vw,14px); font-weight:700; letter-spacing:.08em; text-transform:uppercase; opacity:.55; min-height:16px;}
+.tmBar{width:100%; max-width:420px; height:8px; border-radius:5px; background:rgba(0,0,0,.16); margin-top:14px; overflow:hidden;}
+.tmStage.rest .tmBar, .tmStage.prep .tmBar, .tmStage.done .tmBar{background:rgba(255,255,255,.18);}
+.tmBar i{display:block; height:100%; width:0; background:currentColor; border-radius:5px; opacity:.8;}
+.tmBtns{display:flex; gap:12px; margin-top:16px; width:100%; max-width:420px;}
+.tmBtns button{flex:1; height:56px; border-radius:14px; border:2px solid currentColor; background:transparent;
+  color:inherit; font-weight:800; font-size:13px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer;}
+.tmBtns button:active{transform:scale(.97);}
+.tmrow{display:flex; justify-content:space-between; padding:8px 0; font-size:13px; border-bottom:1px solid var(--line);}
+.tmrow b{font-variant-numeric:tabular-nums;}
+.mutebtn{background:var(--panel); border:1px solid var(--line); color:var(--yellow); border-radius:12px;
+  width:44px; height:44px; flex:none; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+.mutebtn.on{color:var(--red); border-color:var(--red);}
+.mutebtn:active{transform:scale(.94);}
 .progress{display:flex; gap:4px; padding:4px var(--sp3) 10px;}
 .progress i{height:5px; flex:1; background:var(--line); border-radius:3px;}
 .progress i.done{background:var(--yellow-dim);}
@@ -228,6 +291,11 @@ body{
 .histrow .ht{font-family:var(--disp); font-weight:800; font-size:20px; font-variant-numeric:tabular-nums;}
 
 /* builder */
+.palhead{position:sticky; top:0; z-index:5; background:var(--ink); display:flex; align-items:center; gap:10px;
+  font-size:10.5px; letter-spacing:.22em; color:var(--yellow-dim); font-weight:800; text-transform:uppercase;
+  padding:16px 0 8px; margin-top:4px;}
+.palhead::after{content:''; flex:1; height:1px; background:var(--line);}
+.palhead span{order:3; color:var(--mute2); letter-spacing:.04em; font-size:10px;}
 .palette{display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-top:14px;}
 .ptile{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:11px 5px 9px;
   display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; text-align:center; color:var(--yellow);}
@@ -270,6 +338,15 @@ select.tf{appearance:none;}
 .sw{width:52px; height:30px; border-radius:999px; background:var(--line); position:relative; cursor:pointer; flex:none;}
 .sw i{position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:var(--mute); transition:.18s;}
 .sw.on{background:var(--yellow);} .sw.on i{left:25px; background:#000;}
+@media (orientation:landscape) and (max-height:520px){
+  .tmSet{font-size:20px; min-height:20px;}
+  .tmPhase{margin-top:0;}
+  .tmBig{font-size:min(50vh, 58vw);}
+  .tmBig.d2{font-size:min(48vh, 44vw);}
+  .tmBig.d3{font-size:min(44vh, 32vw);}
+  .tmBig.d4{font-size:min(40vh, 26vw);}
+  .tmBar{margin-top:8px;} .tmBtns{margin-top:10px;}
+}
 @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important;}}
 </style>
 </head>
@@ -327,6 +404,19 @@ select.tf{appearance:none;}
         <div class="pill" data-g="f" onclick="setGender('f')">Female</div>
         <div class="pill" data-d="open" onclick="setDiv('open')" style="margin-left:auto;">Open</div>
         <div class="pill" data-d="pro" onclick="setDiv('pro')">Pro</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Coach</label>
+      <div class="pillrow" id="preCoachPills">
+        <div class="pill" data-pc="off" onclick="setCoachQuick('off')">Off</div>
+        <div class="pill" data-pc="kind" onclick="setCoachQuick('kind')">Kind</div>
+        <div class="pill" data-pc="hard" onclick="setCoachQuick('hard')">Goggins</div>
+      </div>
+      <div class="pillrow" id="preExplicitRow" style="display:none; margin-top:10px;">
+        <div class="pill" id="preExplicitPill" onclick="toggleExplicitQuick()">No filter</div>
+        <span style="align-self:center; color:var(--mute2); font-size:11px; letter-spacing:.04em;">Swearing and harsher call-outs</span>
       </div>
     </div>
 
@@ -405,6 +495,113 @@ select.tf{appearance:none;}
   <div class="footpad"><button class="cta" onclick="generateWorkout()">Generate workout</button></div>
 </div>
 
+<!-- ============ VOICE STUDIO ============ -->
+<div class="screen" id="studio">
+  <div class="bar">
+    <button class="iconbtn ghost" onclick="go('settings')">← Back</button>
+    <div class="grow"></div>
+    <div class="wordmark" style="font-size:15px;">RECORD</div>
+  </div>
+  <div class="scroll pad">
+    <div class="h1" style="font-size:28px;">Record your own voice</div>
+    <div style="color:var(--mute); font-size:13px; margin-top:10px; line-height:1.55;">
+      Your phone's built-in voice will always sound synthetic. Recording real audio fixes that completely.
+      Record yourself, or hand the phone to someone with the right voice for the job.
+      Anything you don't record falls back to the device voice.
+    </div>
+    <div id="studioStatus" style="margin-top:16px;"></div>
+    <div class="pillrow" style="margin-top:16px;">
+      <div class="pill" id="stMode-hard" onclick="setStudioMode('hard')">Goggins lines</div>
+      <div class="pill" id="stMode-kind" onclick="setStudioMode('kind')">Kind lines</div>
+    </div>
+    <div class="pillrow" style="margin-top:10px;">
+      <div class="pill" id="stKind-push" onclick="setStudioKind('push')">Push lines</div>
+      <div class="pill" id="stKind-explicit" onclick="setStudioKind('explicit')">No filter</div>
+      <div class="pill" id="stKind-finish" onclick="setStudioKind('finish')">Finish</div>
+    </div>
+    <div id="lineList" style="margin-top:18px;"></div>
+    <div style="height:30px;"></div>
+    <button class="cta sub" onclick="clearClips()">Delete all recordings</button>
+    <div style="height:30px;"></div>
+  </div>
+</div>
+
+<!-- ============ TIMER SETUP ============ -->
+<div class="screen" id="timer">
+  <div class="bar">
+    <button class="iconbtn ghost" onclick="go('home')">← Back</button>
+    <div class="grow"></div>
+    <div class="wordmark" style="font-size:15px;">TIMER</div>
+  </div>
+  <div class="scroll pad">
+    <div class="field" style="margin-top:0;"><label>Mode</label>
+      <div class="pillrow" id="tmModePills">
+        <div class="pill" data-tm="interval" onclick="setTmMode('interval')">Intervals</div>
+        <div class="pill" data-tm="down" onclick="setTmMode('down')">Countdown</div>
+        <div class="pill" data-tm="up" onclick="setTmMode('up')">Stopwatch</div>
+      </div>
+    </div>
+
+    <div id="tmIntervalFields">
+      <div class="field"><label>Sets</label>
+        <div class="stepper"><button onclick="tmBump('tmSets',-1)">–</button>
+          <input class="mono" id="tmSets" inputmode="numeric" value="4" oninput="tmPreview()">
+          <button onclick="tmBump('tmSets',1)">+</button></div>
+      </div>
+      <div class="field"><label>Work (seconds)</label>
+        <div class="stepper"><button onclick="tmBump('tmWork',-5)">–</button>
+          <input class="mono" id="tmWork" inputmode="numeric" value="45" oninput="tmPreview()">
+          <button onclick="tmBump('tmWork',5)">+</button></div>
+      </div>
+      <div class="field"><label>Rest (seconds)</label>
+        <div class="stepper"><button onclick="tmBump('tmRest',-5)">–</button>
+          <input class="mono" id="tmRest" inputmode="numeric" value="15" oninput="tmPreview()">
+          <button onclick="tmBump('tmRest',5)">+</button></div>
+      </div>
+    </div>
+
+    <div id="tmDownFields" style="display:none;">
+      <div class="field"><label>Countdown from</label>
+        <div class="timeinput">
+          <input class="mono" id="tmDownMin" inputmode="numeric" maxlength="3" value="10" oninput="tmPreview()"><span>:</span>
+          <input class="mono" id="tmDownSec" inputmode="numeric" maxlength="2" value="00" oninput="tmPreview()">
+          <span style="font-size:12px; color:var(--mute2); letter-spacing:.1em; margin-left:6px;">MM : SS</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="field"><label>Lead-in countdown</label>
+      <div class="pillrow" id="tmPrepPills">
+        <div class="pill" data-prep="0" onclick="setTmPrep(0)">None</div>
+        <div class="pill" data-prep="5" onclick="setTmPrep(5)">5s</div>
+        <div class="pill" data-prep="10" onclick="setTmPrep(10)">10s</div>
+      </div>
+    </div>
+
+    <div class="chartcard" id="tmPreview" style="margin-top:20px;"></div>
+    <div class="pillrow" id="tmPresets" style="margin-top:4px;"></div>
+    <div style="height:100px;"></div>
+  </div>
+  <div class="footpad"><button class="cta" onclick="startTimer()">Start timer</button></div>
+</div>
+
+<!-- ============ TIMER RUN (fullscreen) ============ -->
+<div class="screen" id="timerRun">
+  <div class="tmStage" id="tmStage">
+    <button class="mutebtn tmMute" onclick="toggleMute()" aria-label="Mute"></button>
+    <button class="tmClose" onclick="stopTimer()">✕</button>
+    <div class="tmSet" id="tmSet"></div>
+    <div class="tmPhase" id="tmPhase">WORK</div>
+    <div class="tmNum"><div class="tmBig mono" id="tmBig">00:00</div></div>
+    <div class="tmMeta" id="tmMeta"></div>
+    <div class="tmBar"><i id="tmBarFill"></i></div>
+    <div class="tmBtns">
+      <button onclick="tmTogglePause()" id="tmPauseBtn">Pause</button>
+      <button onclick="tmSkip()">Skip</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ CROSSFIT ============ -->
 <div class="screen" id="crossfit">
   <div class="bar">
@@ -470,6 +667,7 @@ select.tf{appearance:none;}
         <div class="b" id="subLastWrap">Last <b class="mono" id="subLast">—</b></div>
       </div>
     </div>
+    <button class="mutebtn" onclick="toggleMute()" aria-label="Mute"></button>
     <div class="delta" id="delta" style="display:none;"><small>Proj.</small><span id="deltaVal">—</span></div>
   </div>
   <div class="progress" id="prog"></div>
@@ -547,8 +745,7 @@ select.tf{appearance:none;}
 
     <div class="field"><label>Tap to add</label>
       <input class="tf" id="palSearch" placeholder="Search movements…" oninput="renderBuilder()" autocomplete="off">
-      <div class="pillrow" id="catPills" style="margin-top:12px;"></div>
-      <div class="palette" id="palette"></div>
+      <div id="palette"></div>
     </div>
 
     <div class="field"><label>Your workout <span id="bCount" style="color:var(--mute2)"></span></label>
@@ -586,6 +783,27 @@ select.tf{appearance:none;}
     <div class="stgrow"><div class="sl"><b>Vibrate on tap</b><small>Haptic confirm</small></div><div class="sw" id="swHap" onclick="toggleSet('haptics')"><i></i></div></div>
     <div class="stgrow"><div class="sl"><b>Keep screen on</b><small>Wake lock during a race</small></div><div class="sw" id="swWake" onclick="toggleSet('wakelock')"><i></i></div></div>
     <div class="stgrow"><div class="sl"><b>Start countdown</b><small>3-2-1 before the clock runs</small></div><div class="sw" id="swCd" onclick="toggleSet('countdown')"><i></i></div></div>
+    <div class="eyebrow">Coach voice</div>
+    <div id="packStatus"></div>
+    <div class="pillrow" id="coachPills">
+      <div class="pill" data-coach="off" onclick="setCoach('off')">Off</div>
+      <div class="pill" data-coach="hard" onclick="setCoach('hard')">Goggins</div>
+      <div class="pill" data-coach="kind" onclick="setCoach('kind')">Kind</div>
+    </div>
+    <div id="coachDesc" style="color:var(--mute); font-size:12.5px; margin-top:10px; line-height:1.5;"></div>
+    <div class="stgrow" id="explicitRow" style="display:none;"><div class="sl"><b>No filter</b><small>Swearing and harsher call-outs. Turn off before sharing.</small></div><div class="sw" id="swExplicit" onclick="toggleExplicit()"><i></i></div></div>
+    <div id="voicePickWrap" style="display:none;">
+      <label style="display:block; font-size:11px; letter-spacing:.2em; color:var(--mute); text-transform:uppercase; margin:18px 0 8px; font-weight:700;">Voice</label>
+      <select class="tf" id="voicePick" onchange="setVoice(this.value)"></select>
+      <div id="voiceHint" style="color:var(--mute2); font-size:11.5px; margin-top:9px; line-height:1.55;"></div>
+    </div>
+    <button class="cta sub" style="margin-top:12px" onclick="previewCoach()">Hear a sample</button>
+    <div id="studioEntry" style="display:none;">
+      <div id="studioWhy" style="color:var(--mute2); font-size:11.5px; margin-top:14px; line-height:1.55;"></div>
+      <button class="cta" style="margin-top:10px" onclick="go('studio')">Record your own voice</button>
+      <div id="clipSummary" style="color:var(--mute); font-size:11.5px; margin-top:9px;"></div>
+    </div>
+
     <div class="eyebrow">Data</div>
     <div id="storeStatus" style="color:var(--mute); font-size:13px; line-height:1.5;"></div>
     <div style="height:16px;"></div>
@@ -660,7 +878,7 @@ var RZ = (function(){
     { id:'hyrox', kind:'HYROX', name:'Full HYROX', division:true,
       sub:'8 × 1km · 8 stations · Open / Pro', target:90*60000,
       segs:[
-        run(1000), stn('SkiErg','m',1000),
+        run(1000), stn('Ski Erg','m',1000),
         run(1000), stn('Sled Push','m',50,{open:{m:'152kg',f:'102kg'},pro:{m:'202kg',f:'152kg'}}),
         run(1000), stn('Sled Pull','m',50,{open:{m:'103kg',f:'78kg'},pro:{m:'153kg',f:'103kg'}}),
         run(1000), stn('Burpee Broad Jumps','m',80),
@@ -877,6 +1095,7 @@ var RZ = (function(){
     {k:'ski',      name:'Ski Erg',          icon:'ski',       cat:'Cardio', unit:'m',    val:500},
     {k:'rowerg',   name:'Row',              icon:'rower',     cat:'Cardio', unit:'m',    val:500},
     {k:'bikeerg',  name:'Bike',             icon:'bike',      cat:'Cardio', unit:'m',    val:1000},
+    {k:'bikeint',  name:'Bike Intervals',   icon:'bike',      cat:'Cardio', unit:'m',    val:1000},
     {k:'du',       name:'Double-Unders',    icon:'rope',      cat:'Cardio', unit:'reps', val:50},
     {k:'shuttle',  name:'Shuttle Runs',     icon:'shuttle',   cat:'Cardio', unit:'m',    val:200},
     // --- barbell ---
@@ -923,6 +1142,8 @@ var RZ = (function(){
     {k:'jsquat',   name:'Jump Squats',      icon:'jumpsquat', cat:'Bodyweight', unit:'sets', val:4, reps:12, rest:60},
     {k:'splsq',    name:'Split Squats',     icon:'splitsquat',cat:'Bodyweight', unit:'sets', val:3, reps:12, rest:60},
     {k:'mtn',      name:'Mountain Climbers',icon:'mtnclimb',  cat:'Bodyweight', unit:'sets', val:3, reps:30, rest:45},
+    {k:'glute',    name:'Glute Bridges',    icon:'plank',     cat:'Bodyweight', unit:'sets', val:3, reps:15, rest:45},
+    {k:'calf',     name:'Calf Raises',      icon:'stepup',    cat:'Bodyweight', unit:'sets', val:3, reps:20, rest:40},
     {k:'plank',    name:'Plank Hold',       icon:'plank',     cat:'Bodyweight', unit:'sets', val:3, reps:45, rest:45, hold:true}
   ];
   var CAT_ORDER = ['Cardio','Barbell','Rig','Weights','Hyrox','Bodyweight'];
@@ -933,6 +1154,35 @@ var RZ = (function(){
     var s={type:'station', name:c.name, unit:c.unit, value:c.val, load:c.load?{m:c.load.m,f:c.load.f}:null};
     if(c.unit==='sets'){ s.reps=c.reps; s.rest=c.rest; if(c.hold) s.hold=true; }
     return s;
+  }
+
+  function catalogByName(n){ for(var i=0;i<CATALOG.length;i++){ if(CATALOG[i].name===n) return CATALOG[i]; } return null; }
+  // pick a different movement, preferring the same category so a leg slot stays a leg slot
+  function randomSwap(name, rng){
+    rng = rng || Math.random;
+    var cur = catalogByName(name);
+    var pool = cur ? CATALOG.filter(function(m){ return m.cat===cur.cat && m.k!==cur.k; }) : CATALOG.slice();
+    if(!pool.length) pool = CATALOG.filter(function(m){ return !cur || m.k!==cur.k; });
+    if(!pool.length) return null;
+    return pool[Math.floor(rng()*pool.length)];
+  }
+
+  // ---- interval timer plan (pure, testable) ----
+  // sets x work, with rest between (no trailing rest). prep = optional lead-in.
+  function intervalPlan(opts){
+    opts=opts||{};
+    var sets=Math.max(1, Math.min(99, Math.round(opts.sets||1)));
+    var work=Math.max(1, Math.min(3600, Math.round(opts.work||60)));
+    var rest=Math.max(0, Math.min(3600, Math.round(opts.rest||0)));
+    var prep=Math.max(0, Math.min(60, Math.round(opts.prep||0)));
+    var ph=[];
+    if(prep>0) ph.push({kind:'prep', sec:prep, set:0});
+    for(var i=1;i<=sets;i++){
+      ph.push({kind:'work', sec:work, set:i});
+      if(rest>0 && i<sets) ph.push({kind:'rest', sec:rest, set:i});
+    }
+    var total=0; ph.forEach(function(p){ total+=p.sec; });
+    return {phases:ph, sets:sets, work:work, rest:rest, prep:prep, totalSec:total};
   }
 
   // reorder helper (pure, testable)
@@ -1080,14 +1330,14 @@ var RZ = (function(){
     MOVES:MOVES, FOCUSLABEL:FOCUSLABEL, LEVELS:LEVELS, ALL_GEAR:ALL_GEAR, levelBy:levelBy,
     estimateMs:estimateMs, segMs:segMs, generate:generate, reorder:reorder,
     CF_MOVES:CF_MOVES, CF_FORMATS:CF_FORMATS, CF_BENCH:CF_BENCH, generateCF:generateCF, cfSegMs:cfSegMs,
-    CATALOG:CATALOG, CAT_ORDER:CAT_ORDER, catalogByKey:catalogByKey, catalogSeg:catalogSeg };
+    CATALOG:CATALOG, CAT_ORDER:CAT_ORDER, catalogByKey:catalogByKey, catalogByName:catalogByName, catalogSeg:catalogSeg, randomSwap:randomSwap, intervalPlan:intervalPlan };
 })();
 if(typeof module!=='undefined') module.exports = RZ;
 </script>
 
 <!-- ================= APP (DOM) ================= -->
 <script>
-var APP_VERSION='1.1.0';
+var APP_VERSION='1.9.3';
 /* ---------- storage (localStorage w/ in-memory fallback) ---------- */
 var Store = (function(){
   var mem={}, ok=true;
@@ -1099,8 +1349,9 @@ var Store = (function(){
   };
 })();
 
-var settings = Object.assign({gender:'m',division:'open',sound:true,haptics:true,wakelock:true,countdown:true}, Store.get('rz.settings',{}));
+var settings = Object.assign({gender:'m',division:'open',sound:true,haptics:true,wakelock:true,countdown:true,coach:'off',explicit:false,voice:{},pack:true}, Store.get('rz.settings',{}));
 var raceLog = Store.get('rz.history', []);
+clipIndex = Store.get('rz.clipIndex', {});
 var custom  = Store.get('rz.custom', []);
 var lastRace = Store.get('rz.last', null);
 function saveSettings(){ Store.set('rz.settings',settings); }
@@ -1110,7 +1361,8 @@ function saveLast(){ Store.set('rz.last',lastRace); }
 
 /* ---------- router ---------- */
 var current=null; // selected workout def
-function go(id){
+var currentScreen='home';
+function go(id, fromPop){
   document.querySelectorAll('.screen').forEach(function(s){ s.classList.toggle('active', s.id===id); });
   var dw=document.getElementById('drawer');
   dw.classList.toggle('race-active', id==='race');
@@ -1122,7 +1374,32 @@ function go(id){
   if(id==='records') renderRecords();
   if(id==='train') renderTrain();
   if(id==='crossfit') renderCrossfit();
+  if(id==='timer') renderTimer();
+  if(id==='studio') renderStudio();
+  currentScreen=id;
+  if(!fromPop) pushNav(id);
   window.scrollTo(0,0);
+}
+
+/* ---------- hardware / browser back button ---------- */
+function pushNav(id){ try{ history.pushState({screen:id}, ''); }catch(e){} }
+function initNav(){
+  try{ history.replaceState({screen:'home'}, ''); }catch(e){}
+  window.addEventListener('popstate', function(ev){
+    // 1. an open overlay (edit sheet, confirm, swap picker) closes first
+    var ov=document.getElementById('overlay');
+    if(ov && ov.classList.contains('show')){ closeOverlay(); pushNav(currentScreen); return; }
+    // 2. then the splits drawer
+    var dw=document.getElementById('drawer');
+    if(dw && dw.classList.contains('open')){ dw.classList.remove('open'); pushNav(currentScreen); return; }
+    // 3. a running timer stops rather than exiting the app
+    if(TM && !TM.done){ stopTimer(); pushNav('timer'); return; }
+    // 4. mid-race, back asks before dropping the session rather than losing it
+    if(R && R.running){ askStop(); pushNav(currentScreen); return; }
+    // 4. otherwise navigate back through the app; from home, back exits as normal
+    var target=(ev.state && ev.state.screen) ? ev.state.screen : 'home';
+    go(target, true);
+  });
 }
 function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('show');},1700); }
 
@@ -1140,6 +1417,7 @@ function renderHome(){
     h+='<div class="qs" onclick="quickStart()"><div class="qi">▸</div><div class="qd"><b>'+lname+'</b><small>Redline again · '+modeLabel+'</small></div><div class="qgo">GO</div></div>';
   }
   h+='<div class="eyebrow">Train</div>';
+  h+='<div class="card" onclick="go(\'timer\')"><div class="edge"></div><div class="kname">Interval timer</div><div class="ksub">Big-screen work and rest timer. Preprogram sets, or just a countdown or stopwatch.</div><div class="kstat"><span>Yellow work</span><span>Red rest</span><span>Audible countdown</span></div></div>';
   h+='<div class="card" onclick="go(\'train\')"><div class="edge"></div><div class="kname">Training generator</div><div class="ksub">Set a duration and focus — get a Hyrox-style session built to fit your clock.</div><div class="kstat"><span>Time-boxed</span><span>Race sim → gym day</span></div></div>';
   h+='<div class="card" onclick="go(\'crossfit\')"><div class="edge"></div><div class="kname">CrossFit</div><div class="ksub">Benchmark WODs and generated AMRAP / for time / EMOM sessions.</div><div class="kstat"><span>14 benchmarks</span><span>4 formats</span></div></div>';
   var sims = RZ.PRESETS;
@@ -1174,7 +1452,7 @@ function openPreWith(w){
   document.getElementById('goalMin').value=Math.floor(gs/60); document.getElementById('goalSec').value=RZ.pad(gs%60);
   document.getElementById('divField').style.display = 'block';
   document.querySelectorAll('#divField [data-d]').forEach(function(p){ p.style.display=current.division?'inline-flex':'none'; });
-  syncPills(); setMode('up'); renderPreSegs();
+  syncPills(); syncPreCoach(); setMode('up'); renderPreSegs();
   go('pre');
 }
 function syncPills(){
@@ -1185,6 +1463,109 @@ function setMode(m){ mode=m; document.querySelectorAll('#modePills .pill').forEa
   document.getElementById('goalField').style.display = (m==='goal')?'block':'none'; }
 function setGender(g,fromSettings){ settings.gender=g; saveSettings(); syncPills(); if(!fromSettings&&current) renderPreSegs(); }
 function setDiv(d,fromSettings){ settings.division=d; saveSettings(); syncPills(); if(!fromSettings&&current) renderPreSegs(); }
+/* ---------- coach voice packs ----------
+   Two original voice packs. HARD is deliberately brutal, no sugar coating.
+   KIND is the opposite. Lines are original, written for this app. */
+var COACH = {
+  off:  {id:'off',  name:'Off',   desc:'Silence. Just beeps and splits.'},
+  hard: {id:'hard', name:'Goggins',  desc:'Ruthless. It goes after the weak voice in your head, not you.',
+    rate:1.16, pitch:0.52,
+    push:[
+      "Who's gonna carry the load? Not that soft voice in your head. YOU.",
+      "You don't know me, son! You don't know what I've got in the tank!",
+      "There it is. That weak little voice asking you to stop. Tell it to sit down.",
+      "Stop negotiating. You already know the answer. MOVE.",
+      "That was comfortable. Comfortable is where you go to die.",
+      "Your legs are lying. Your lungs are lying. Everything soft in you is lying.",
+      "Nobody's coming to save you. Nobody. Get it done yourself.",
+      "You wanted to be hard? This is the bill. PAY IT.",
+      "That's the wimp in you talking. Drown him out.",
+      "You think that's pain? That's just information. Keep going.",
+      "Soft mind, soft everything. Fix your mind. Right now.",
+      "Don't you dare quit on me. Don't you dare quit on yourself.",
+      "Everybody wants to be the guy. Nobody wants to do what the guy does.",
+      "You're not tired. You're just soft. There's a difference and you know it.",
+      "Callus your mind. One more. Then one more after that.",
+      "Motivation is garbage. Motivation left an hour ago. Discipline's still here.",
+      "That excuse forming in your head? Kill it before it reaches your mouth.",
+      "You've got another gear. You've always had another gear. USE IT.",
+      "Talk is cheap. The clock doesn't care what you meant to do.",
+      "You're doing this for the guy you're gonna be. Don't let him down.",
+      "Nobody cares. Nobody's watching. Do it anyway. That's the whole point.",
+      "This is where the weak version of you gets buried. GO.",
+      "Get comfortable being uncomfortable. That's the only way out.",
+      "You said you wanted this. Was that a lie? PROVE IT WASN'T."
+    ],
+    explicit:[
+      "There it is. That little bitch in your head asking you to stop. Tell it to sit down.",
+      "There's that little bitch voice again. Shut it the hell up.",
+      "Stop being such a soft little bitch and MOVE.",
+      "Get your ass moving. Nobody's carrying you.",
+      "You're not tired, you're being a bitch about it. Big difference.",
+      "Suck it up, buttercup. Nobody gives a damn how you feel.",
+      "That's weak as hell. Do it again and do it right.",
+      "Quit whining and get the damn work done.",
+      "You gonna let that little bitch in your head win? Hell no.",
+      "Move your ass! The clock doesn't care about your feelings!",
+      "Damn right it hurts. That's the price. Pay it.",
+      "Stop screwing around. You know exactly what you're supposed to do.",
+      "You look soft right now. Fix it.",
+      "Hell no. Not today. Not on my watch. GO."
+    ],
+    intro:function(label,detail,explicit){
+      var t=["%L. %D. And don't you dare take it easy.",
+             "%L! %D! Get your mind right and GO!",
+             "%L. %D. This is where most people quit. You're not most people.",
+             "%L. %D. Bend those knees. I don't even have knees.",
+             "%L. %D. Stop thinking. Start moving.",
+             "%L. %D. Nobody's counting for you. Nobody's watching. GO.",
+             "%L. %D. The weak version of you hates this. Good."];
+      var x=["%L! %D! Move your ass!",
+             "%L. %D. And no half-assing it either.",
+             "%L! %D! Quit stalling, dammit!",
+             "%L. %D. Don't you dare be soft about this one."];
+      var pool = explicit ? t.concat(x) : t;
+      return pool[Math.floor(Math.random()*pool.length)].replace('%L',label).replace('%D',detail||'');
+    },
+    finish:["Done. And that soft voice doubted you the entire way. Remember that.",
+            "That's the work. It hurt, and you did it anyway. That's the whole game.",
+            "Finished. Now the hard part: doing it again tomorrow.",
+            "You just beat the version of you that wanted to stop. Good."],
+    finishX:["Damn right. Now go do it again tomorrow.",
+             "That's how it's done. The little bitch lost today."]
+  },
+  kind: {id:'kind', name:'Kind',  desc:'Warm and steady. Gentle encouragement the whole way.',
+    rate:0.9, pitch:1.06,
+    push:[
+      "That's lovely work. I'm proud of you.",
+      "You're getting a little better every single day.",
+      "Look at you go. That took real courage.",
+      "You showed up today, and that matters more than the time.",
+      "Steady now. You're doing beautifully.",
+      "I like the way you keep going when it gets hard.",
+      "That's one more than yesterday. That's how it's done.",
+      "Be kind to yourself. You're doing something difficult.",
+      "You should feel good about that one.",
+      "Nice and steady. There's no rush at all.",
+      "You're stronger than when you started. Truly.",
+      "Well done. Take a breath, you've earned it.",
+      "It's alright to find this hard. You're still moving.",
+      "I'm glad you're here today.",
+      "That's the spirit. Keep that lovely rhythm.",
+      "You are doing just fine. Better than fine."
+    ],
+    intro:function(label,detail){
+      var t=["%L. %D. Take your time with this one.",
+             "%L. %D. You've got this, friend.",
+             "Next up, %L. %D. Nice and steady.",
+             "%L. %D. Breathe, and begin when you're ready.",
+             "%L. %D. I'll be right here with you."];
+      return t[Math.floor(Math.random()*t.length)].replace('%L',label).replace('%D',detail||'');
+    },
+    finish:["All finished. I'm really proud of you.","You did it. That was wonderful to watch.","Beautiful work today. Rest well."]
+  }
+};
+
 /* ---------- movement icons (inline SVG, stroke inherits currentColor) ---------- */
 var ICONS = {
 // ---- CARDIO ----
@@ -1233,6 +1614,10 @@ jumpsquat:'<circle cx="12" cy="7" r="2.3" fill="currentColor" stroke="none"/><pa
 splitsquat:'<path d="M2 20.5h20" stroke-width="2"/><path d="M4 18.5c0-2 1-3 2.5-3H8v3z" fill="currentColor" stroke="none"/><path d="M16 18.5c0-2 1-3 2.5-3H20v3z" fill="currentColor" stroke="none"/><circle cx="12" cy="4" r="2.2" fill="currentColor" stroke="none"/><path d="M12 6.5v5" stroke-width="2.8"/><path d="M12 11.5L6.5 15M12 11.5l6 4" stroke-width="2.4"/>',
 mtnclimb:'<path d="M2 21h20" stroke-width="2.4"/><circle cx="19" cy="10" r="2.2" fill="currentColor" stroke="none"/><path d="M17 11.5L7 15" stroke-width="3.2"/><path d="M17.5 13v8M7 15v6" stroke-width="2.6"/><path d="M11 14.5l1 3.5-3 2.5" stroke-width="2.4"/><path d="M2.5 12h3M3.5 15.5h2.5" stroke-width="2"/>',
 ringdip:'<path d="M2 2.5h20" stroke-width="2.4"/><path d="M7 2.5v4M17 2.5v4" stroke-width="2.2"/><circle cx="7" cy="9" r="2.9" stroke-width="2.6"/><circle cx="17" cy="9" r="2.9" stroke-width="2.6"/><circle cx="12" cy="13" r="2.1" fill="currentColor" stroke="none"/><path d="M12 15.2v3M9.5 11.5L12 13l2.5-1.5" stroke-width="2.4"/><path d="M9.5 21l2.5-2.8 2.5 2.8" stroke-width="2.4"/>',
+search:'<circle cx="10.5" cy="10.5" r="6.5" stroke-width="2.4"/><path d="M15.5 15.5L21 21" stroke-width="2.8"/>',
+sound:'<path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill="currentColor" stroke="none"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6" stroke-width="2.2"/><path d="M18.5 6.5a8 8 0 0 1 0 11" stroke-width="2.2"/>',
+muted:'<path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill="currentColor" stroke="none"/><path d="M16 9.5l5 5M21 9.5l-5 5" stroke-width="2.6"/>',
+dice:'<rect x="3" y="3" width="18" height="18" rx="4.5" stroke-width="2.4"/><circle cx="8.5" cy="8.5" r="1.7" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.7" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.7" fill="currentColor" stroke="none"/>',
 rest:'<circle cx="12" cy="13" r="8" stroke-width="2.6"/><path d="M12 8.5V13l3 2" stroke-width="2.6"/><path d="M9 2h6" stroke-width="2.6"/><path d="M12 2v3" stroke-width="2.4"/>',
 plank:'<path d="M2 21h20" stroke-width="2.4"/><circle cx="19" cy="11" r="2.3" fill="currentColor" stroke="none"/><path d="M17 12.5H5.5" stroke-width="3.4"/><path d="M5.5 12.5v8" stroke-width="2.8"/><path d="M3 20.5h6" stroke-width="3"/><path d="M17.5 14v7" stroke-width="2.6"/><circle cx="11" cy="7" r="2.6" stroke-width="1.8"/><path d="M11 5.6V7l1 .8" stroke-width="1.6"/>',
 };
@@ -1291,6 +1676,290 @@ function renderPreSegs(){
   });
 }
 function editCurrent(){ if(current&&current._custom){ loadBuild(current); go('builder'); } }
+function syncPreCoach(){
+  var cur=settings.coach||'off';
+  document.querySelectorAll('#preCoachPills .pill').forEach(function(p){ p.classList.toggle('on', p.dataset.pc===cur); });
+  var row=document.getElementById('preExplicitRow');
+  if(row){ row.style.display = cur==='hard'?'flex':'none';
+    document.getElementById('preExplicitPill').classList.toggle('on', !!settings.explicit); }
+}
+function setCoachQuick(m){
+  settings.coach = COACH[m]?m:'off'; saveSettings();
+  pickedVoice=null; initVoices(); syncPreCoach(); buzz(8);
+  if(settings.coach!=='off') previewCoach();
+}
+function toggleExplicitQuick(){ settings.explicit=!settings.explicit; saveSettings(); syncPreCoach(); buzz(8); if(settings.coach==='hard') previewCoach(); }
+
+/* ---------- voice studio: record real audio for each line ---------- */
+var stMode='hard', stKind='push', mediaRec=null, recKey=null, recChunks=[];
+function setStudioMode(m){ stMode=m; renderStudio(); }
+function setStudioKind(k){ stKind=k; renderStudio(); }
+function studioLines(){
+  var pack=COACH[stMode]; if(!pack) return [];
+  if(stKind==='explicit') return pack.explicit||[];
+  if(stKind==='finish') return (pack.finish||[]).concat(pack.finishX||[]);
+  return pack.push||[];
+}
+function renderStudio(){
+  ['hard','kind'].forEach(function(m){ var el=document.getElementById('stMode-'+m); if(el) el.classList.toggle('on', m===stMode); });
+  ['push','explicit','finish'].forEach(function(k){ var el=document.getElementById('stKind-'+k); if(el) el.classList.toggle('on', k===stKind); });
+  var ex=document.getElementById('stKind-explicit'); if(ex) ex.style.display = stMode==='hard'?'inline-flex':'none';
+  if(stMode!=='hard' && stKind==='explicit') stKind='push';
+
+  var st=document.getElementById('studioStatus');
+  var supported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+  var total=clipCount(stMode);
+  if(!supported){
+    st.innerHTML='<div class="chartcard" style="margin:0"><b style="color:var(--behind)">Recording not available</b><div style="color:var(--mute); font-size:12.5px; margin-top:6px; line-height:1.5">This browser will not give access to the microphone. On iPhone this needs Safari, and the app must be opened over https.</div></div>';
+  } else {
+    st.innerHTML='<div class="chartcard" style="margin:0"><b>'+total+' recorded</b> for '+COACH[stMode].name.toLowerCase()+' mode<div style="color:var(--mute); font-size:12.5px; margin-top:6px; line-height:1.5">Hold <b>Record</b> while you speak, release to stop. Recorded lines play instead of the robot voice.</div></div>';
+  }
+
+  var lines=studioLines(), h='';
+  lines.forEach(function(t,i){
+    var key=clipKey(stMode, stKind, i), got=hasClip(key);
+    h+='<div class="lineItem'+(got?' has':'')+'" id="li-'+i+'"><div class="lt">'+t.replace(/</g,'&lt;')+'</div><div class="lb">'+
+       '<button class="recbtn" id="rb-'+i+'" onmousedown="startRec('+i+')" onmouseup="stopRec()" ontouchstart="startRec('+i+',event)" ontouchend="stopRec(event)">'+(got?'Redo':'Record')+'</button>'+
+       (got?'<button onclick="previewClip('+i+')">Play</button><button onclick="deleteClip('+i+')">Delete</button><span class="tick">SAVED</span>':'<span class="tick" style="color:var(--mute2)">device voice</span>')+
+       '</div></div>';
+  });
+  document.getElementById('lineList').innerHTML=h;
+}
+function startRec(i, ev){
+  if(ev) ev.preventDefault();
+  if(mediaRec) return;
+  if(!(navigator.mediaDevices && window.MediaRecorder)){ toast('Recording not supported here'); return; }
+  var key=clipKey(stMode, stKind, i);
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    recChunks=[]; recKey=key;
+    try{ mediaRec=new MediaRecorder(stream); }catch(e){ mediaRec=new MediaRecorder(stream,{mimeType:'audio/webm'}); }
+    mediaRec.ondataavailable=function(e){ if(e.data&&e.data.size) recChunks.push(e.data); };
+    mediaRec.onstop=function(){
+      stream.getTracks().forEach(function(t){ t.stop(); });
+      var blob=new Blob(recChunks, {type:(mediaRec&&mediaRec.mimeType)||'audio/webm'});
+      mediaRec=null;
+      if(blob.size<800){ toast('Too short, try again'); renderStudio(); return; }
+      clipPut(recKey, blob).then(function(){ buzz(20); toast('Saved'); renderStudio(); })
+        .catch(function(){ toast('Could not save that clip'); });
+    };
+    mediaRec.start();
+    buzz(15);
+    var b=document.getElementById('rb-'+i); if(b){ b.classList.add('on'); b.textContent='Recording…'; }
+    var li=document.getElementById('li-'+i); if(li) li.classList.add('rec');
+  }).catch(function(){ toast('Microphone permission denied'); });
+}
+function stopRec(ev){
+  if(ev) ev.preventDefault();
+  if(mediaRec && mediaRec.state!=='inactive'){ try{ mediaRec.stop(); }catch(e){ mediaRec=null; } }
+  document.querySelectorAll('.recbtn').forEach(function(b){ b.classList.remove('on'); });
+  document.querySelectorAll('.lineItem').forEach(function(l){ l.classList.remove('rec'); });
+}
+function previewClip(i){ playClip(clipKey(stMode, stKind, i)); }
+function deleteClip(i){ clipDel(clipKey(stMode, stKind, i)).then(function(){ toast('Deleted'); renderStudio(); }); }
+function clearClips(){
+  var ov=document.getElementById('overlay'); ov.className='overlay show';
+  ov.innerHTML='<div class="confirm"><h3>Delete all recordings?</h3><p>Every clip you have recorded will be removed. The device voice takes over again.</p><div class="row"><button class="cta sub" onclick="closeOverlay()">Cancel</button><button class="cta" style="background:var(--behind);color:#fff" onclick="doClearClips()">Delete all</button></div></div>';
+}
+function doClearClips(){
+  var keys=Object.keys(clipIndex);
+  Promise.all(keys.map(function(k){ return clipDel(k); })).then(function(){
+    clipIndex={}; Store.set('rz.clipIndex',{}); closeOverlay(); renderStudio(); toast('All recordings deleted');
+  });
+}
+
+/* ---------- interval / countdown timer ---------- */
+var tmOpts = Object.assign({mode:'interval', sets:4, work:45, rest:15, prep:5, down:600}, Store.get('rz.timer', {}));
+var TM=null, tmRaf=null;
+var TM_PRESETS=[
+  {n:'Tabata', mode:'interval', sets:8, work:20, rest:10},
+  {n:'8 × 30/30', mode:'interval', sets:8, work:30, rest:30},
+  {n:'4 × 45/15', mode:'interval', sets:4, work:45, rest:15},
+  {n:'5 × 3 min', mode:'interval', sets:5, work:180, rest:60},
+  {n:'EMOM 10', mode:'interval', sets:10, work:60, rest:0},
+  {n:'10 min cap', mode:'down', down:600}
+];
+function saveTm(){ Store.set('rz.timer', tmOpts); }
+function renderTimer(){
+  document.querySelectorAll('#tmModePills .pill').forEach(function(p){ p.classList.toggle('on', p.dataset.tm===tmOpts.mode); });
+  document.getElementById('tmIntervalFields').style.display = tmOpts.mode==='interval'?'block':'none';
+  document.getElementById('tmDownFields').style.display = tmOpts.mode==='down'?'block':'none';
+  document.getElementById('tmSets').value=tmOpts.sets;
+  document.getElementById('tmWork').value=tmOpts.work;
+  document.getElementById('tmRest').value=tmOpts.rest;
+  document.getElementById('tmDownMin').value=Math.floor(tmOpts.down/60);
+  document.getElementById('tmDownSec').value=RZ.pad(tmOpts.down%60);
+  document.querySelectorAll('#tmPrepPills .pill').forEach(function(p){ p.classList.toggle('on', +p.dataset.prep===tmOpts.prep); });
+  document.getElementById('tmPresets').innerHTML = TM_PRESETS.map(function(p,i){
+    return '<div class="pill" onclick="applyTmPreset('+i+')">'+p.n+'</div>'; }).join('');
+  tmPreview();
+}
+function setTmMode(m){ tmOpts.mode=m; saveTm(); renderTimer(); }
+function setTmPrep(s){ tmOpts.prep=s; saveTm(); renderTimer(); }
+function tmBump(id,d){ var el=document.getElementById(id); if(!el)return;
+  el.value=Math.max(0,(+el.value||0)+d); buzz(6); tmPreview(); }
+function applyTmPreset(i){
+  var p=TM_PRESETS[i]; if(!p) return;
+  tmOpts.mode=p.mode;
+  if(p.mode==='interval'){ tmOpts.sets=p.sets; tmOpts.work=p.work; tmOpts.rest=p.rest; }
+  else if(p.mode==='down'){ tmOpts.down=p.down; }
+  saveTm(); renderTimer(); toast(p.n); buzz(12);
+}
+function readTmFields(){
+  if(tmOpts.mode==='interval'){
+    tmOpts.sets=Math.max(1,Math.min(99,+document.getElementById('tmSets').value||1));
+    tmOpts.work=Math.max(1,Math.min(3600,+document.getElementById('tmWork').value||1));
+    tmOpts.rest=Math.max(0,Math.min(3600,+document.getElementById('tmRest').value||0));
+  } else if(tmOpts.mode==='down'){
+    var mn=+document.getElementById('tmDownMin').value||0, sc=+document.getElementById('tmDownSec').value||0;
+    tmOpts.down=Math.max(5,Math.min(7200,mn*60+sc));
+  }
+  saveTm();
+}
+function tmPreview(){
+  readTmFields();
+  var el=document.getElementById('tmPreview'); if(!el) return;
+  var h='<h3>Summary</h3>';
+  if(tmOpts.mode==='interval'){
+    var plan=RZ.intervalPlan({sets:tmOpts.sets, work:tmOpts.work, rest:tmOpts.rest, prep:tmOpts.prep});
+    h+='<div class="tmrow"><span>Sets</span><b>'+tmOpts.sets+'</b></div>';
+    h+='<div class="tmrow"><span>Work / rest</span><b>'+tmOpts.work+'s / '+(tmOpts.rest||0)+'s</b></div>';
+    h+='<div class="tmrow"><span>Working time</span><b>'+RZ.fmt(tmOpts.sets*tmOpts.work*1000)+'</b></div>';
+    h+='<div class="tmrow" style="border:0"><span>Total</span><b>'+RZ.fmt(plan.totalSec*1000)+'</b></div>';
+  } else if(tmOpts.mode==='down'){
+    h+='<div class="tmrow" style="border:0"><span>Counts down from</span><b>'+RZ.fmt(tmOpts.down*1000)+'</b></div>';
+  } else {
+    h+='<div class="tmrow" style="border:0"><span>Counts up from zero until you stop it.</span><b></b></div>';
+  }
+  el.innerHTML=h;
+}
+function startTimer(){
+  readTmFields();
+  var phases;
+  if(tmOpts.mode==='interval'){
+    phases=RZ.intervalPlan({sets:tmOpts.sets, work:tmOpts.work, rest:tmOpts.rest, prep:tmOpts.prep}).phases;
+  } else if(tmOpts.mode==='down'){
+    phases=[]; if(tmOpts.prep>0) phases.push({kind:'prep',sec:tmOpts.prep,set:0});
+    phases.push({kind:'work', sec:tmOpts.down, set:1});
+  } else {
+    phases=[]; if(tmOpts.prep>0) phases.push({kind:'prep',sec:tmOpts.prep,set:0});
+    phases.push({kind:'upcount', sec:0, set:1});
+  }
+  TM={ phases:phases, i:0, startTs:performance.now(), paused:false, pauseAccum:0, pauseStart:0,
+       sets:tmOpts.sets, mode:tmOpts.mode, lastBeep:null, done:false };
+  document.querySelectorAll('.mutebtn').forEach(function(b){ b.classList.toggle('on',muted); b.innerHTML=muted?icon('muted',20):icon('sound',20); });
+  document.getElementById('tmPauseBtn').textContent='Pause';
+  requestWake(); go('timerRun'); tmRender(); tmLoop();
+  var p0=phases[0];
+  if(p0 && p0.kind!=='prep') tmAnnounce(p0);
+}
+function tmElapsedInPhase(){
+  var now = TM.paused ? TM.pauseStart : performance.now();
+  return now - TM.startTs - TM.pauseAccum;
+}
+function tmLoop(){
+  if(!TM || TM.done) return;
+  var p=TM.phases[TM.i];
+  if(!p){ tmComplete(); return; }
+  var e=tmElapsedInPhase();
+  if(p.kind==='upcount'){
+    tmSetBig(RZ.fmt(e));
+    setBar(0);
+  } else {
+    var left=p.sec*1000 - e;
+    if(left<=0){ tmNextPhase(); return; }
+    tmSetBig(tmFormat(left));
+    setBar(1 - left/(p.sec*1000));
+    var s=Math.ceil(left/1000);
+    if(s!==TM.lastBeep){
+      TM.lastBeep=s;
+      if(s<=3 && s>=1){ cueTick(); pulseStage(); }
+    }
+  }
+  tmRaf=requestAnimationFrame(tmLoop);
+}
+function tmFormat(ms){
+  var s=Math.ceil(ms/1000);
+  if(s<60) return String(s);
+  return RZ.fmt(s*1000);
+}
+function tmSetBig(txt){
+  var el=document.getElementById('tmBig'); if(!el) return;
+  el.textContent=txt;
+  var n=String(txt).replace(/[^0-9A-Za-z:]/g,'').length;
+  var word=/[A-Za-z]/.test(txt);
+  el.className='tmBig mono'+(word?' word':(n>=5?' d5':(n===4?' d4':(n===3?' d3':(n===2?' d2':'')))));
+}
+function setBar(f){ var b=document.getElementById('tmBarFill'); if(b) b.style.width=Math.max(0,Math.min(1,f))*100+'%'; }
+function pulseStage(){ var st=document.getElementById('tmStage'); st.classList.remove('pulse'); void st.offsetWidth; st.classList.add('pulse'); }
+function tmNextPhase(){
+  var prev=TM.phases[TM.i];
+  TM.i++; TM.startTs=performance.now(); TM.pauseAccum=0; TM.lastBeep=null;
+  var p=TM.phases[TM.i];
+  if(!p){ tmComplete(); return; }
+  // distinct tone at the boundary
+  if(p.kind==='work'){ cueGo(); buzz(60); }
+  else if(p.kind==='rest'){ cueRest(); buzz(40); }
+  tmRender(); tmAnnounce(p);
+  tmRaf=requestAnimationFrame(tmLoop);
+}
+function tmAnnounce(p){
+  if(!p) return;
+  if(p.kind==='work'){
+    var m=settings.coach;
+    if(vpOk && VP && VP.timer){
+      var seq=[];
+      if(TM.mode==='interval' && TM.sets>1 && p.set<=VP.timer.sets) seq.push(m+'-set_'+p.set);
+      seq.push(m+'-go');
+      stopSpeech(); vpStop();
+      vpPlaySeq(seq, function(okPlayed){ if(!okPlayed) say('Go.',{interrupt:true}); });
+    } else {
+      if(TM.mode==='interval' && TM.sets>1) say('Set '+p.set+'. Go.',{interrupt:true});
+      else say('Go.',{interrupt:true});
+    }
+    setTimeout(function(){ if(TM&&!TM.done) coachPush(); }, 1200);
+  } else if(p.kind==='rest'){
+    if(vpOk && VP && VP.timer){ stopSpeech(); vpStop();
+      vpPlaySeq([settings.coach+'-rest'], function(okPlayed){ if(!okPlayed) say('Rest.',{interrupt:true}); }); }
+    else say('Rest.',{interrupt:true});
+  }
+}
+function tmRender(){
+  if(!TM) return;
+  var p=TM.phases[TM.i]; if(!p) return;
+  var st=document.getElementById('tmStage');
+  st.className='tmStage'+(p.kind==='rest'?' rest':(p.kind==='prep'?' prep':''));
+  var setEl=document.getElementById('tmSet');
+  if(TM.mode==='interval' && p.set>0) setEl.textContent='SET '+p.set+' / '+TM.sets;
+  else setEl.textContent='';
+  var ph=document.getElementById('tmPhase');
+  ph.textContent = p.kind==='prep'?'Get ready':(p.kind==='rest'?'Rest':(p.kind==='upcount'?'Elapsed':'Work'));
+  var meta=document.getElementById('tmMeta');
+  if(TM.mode==='interval'){
+    var left=0; for(var i=TM.i;i<TM.phases.length;i++) left+=TM.phases[i].sec;
+    meta.textContent = RZ.fmt(left*1000)+' remaining';
+  } else meta.textContent='';
+  setBar(0);
+}
+function tmTogglePause(){
+  if(!TM||TM.done) return;
+  if(!TM.paused){ TM.paused=true; TM.pauseStart=performance.now(); document.getElementById('tmPauseBtn').textContent='Resume'; stopSpeech(); }
+  else { TM.paused=false; TM.pauseAccum += performance.now()-TM.pauseStart; document.getElementById('tmPauseBtn').textContent='Pause'; tmLoop(); }
+}
+function tmSkip(){ if(!TM||TM.done) return; tmNextPhase(); }
+function tmComplete(){
+  TM.done=true; if(tmRaf) cancelAnimationFrame(tmRaf); tmRaf=null;
+  var st=document.getElementById('tmStage'); st.className='tmStage done';
+  document.getElementById('tmSet').textContent='';
+  document.getElementById('tmPhase').textContent='Complete';
+  tmSetBig('DONE');
+  document.getElementById('tmMeta').textContent = TM.mode==='interval'? (TM.sets+' sets finished') : '';
+  setBar(1);
+  cueDone(); buzz(120); coachFinish(); releaseWake();
+}
+function stopTimer(){
+  if(tmRaf) cancelAnimationFrame(tmRaf); tmRaf=null;
+  TM=null; stopSpeech(); releaseWake(); go('timer');
+}
 
 /* ---------- crossfit ---------- */
 var CFBENCH = RZ.CF_BENCH();
@@ -1353,11 +2022,59 @@ function openSegEditOn(arr, i, after){
     var lf=(s.load&&(s.load.f||(s.load.open&&s.load.open.f)))||'';
     h+='<label>Load — male / female</label><div class="grid2"><input class="tf" id="evLm" value="'+lm+'" placeholder="e.g. 24kg"><input class="tf" id="evLf" value="'+lf+'" placeholder="e.g. 16kg"></div>';
   }
+  if(!isRun && s.unit!=='rest'){
+    h+='<label>Not feeling this one?</label><div class="swaprow">'+
+       '<button class="swapbtn" onclick="openSubPicker()">'+icon('search',20)+' Swap movement</button>'+
+       '<button class="swapbtn dice" onclick="randomSub()" title="Random replacement">'+icon('dice',22)+'</button></div>';
+  }
   h+='<div class="row" style="display:flex; gap:10px; margin-top:24px;"><button class="cta sub" style="flex:1" onclick="closeOverlay()">Cancel</button><button class="cta" style="flex:1.3" onclick="saveSegEdit()">Save</button></div>';
   h+='<button class="cta sub" style="margin-top:10px; color:var(--red)" onclick="deleteSeg()">Remove segment</button>';
   h+='</div>';
   ov.innerHTML=h;
 }
+/* ---- movement substitution ---- */
+function openSubPicker(){
+  var arr=editTarget||current.segs, s=arr[editIdx]; if(!s) return;
+  var cur=RZ.catalogByName(s.name);
+  var ov=document.getElementById('overlay'); ov.className='overlay show';
+  var h='<div class="editsheet"><h3>Swap movement</h3><div class="sub">Replacing '+s.name+'</div>';
+  h+='<input class="tf" id="subSearch" placeholder="Search movements…" oninput="renderSubGrid()" autocomplete="off">';
+  h+='<div class="pillrow" id="subCats" style="margin-top:12px;"></div>';
+  h+='<div class="subgrid" id="subGrid"></div>';
+  h+='<button class="cta sub" style="margin-top:16px" onclick="reopenEdit()">Cancel</button></div>';
+  ov.innerHTML=h;
+  subCat = cur ? cur.cat : RZ.CAT_ORDER[0];
+  renderSubGrid();
+}
+var subCat='Cardio';
+function setSubCat(c){ subCat=c; var q=document.getElementById('subSearch'); if(q) q.value=''; renderSubGrid(); }
+function renderSubGrid(){
+  var q=((document.getElementById('subSearch')||{}).value||'').trim().toLowerCase();
+  var cp=document.getElementById('subCats');
+  if(cp){ cp.style.display = q?'none':'flex';
+    cp.innerHTML = RZ.CAT_ORDER.map(function(c){ return '<div class="pill'+(c===subCat?' on':'')+'" onclick="setSubCat(\''+c+'\')">'+c+'</div>'; }).join(''); }
+  var list = q ? RZ.CATALOG.filter(function(m){ return m.name.toLowerCase().indexOf(q)>=0; })
+               : RZ.CATALOG.filter(function(m){ return m.cat===subCat; });
+  var g=document.getElementById('subGrid'); if(!g) return;
+  g.innerHTML = list.length
+    ? list.map(function(m){ return '<div class="ptile" onclick="applySub(\''+m.k+'\')">'+icon(m.icon,26)+'<span>'+m.name+'</span></div>'; }).join('')
+    : '<div style="grid-column:1/-1;color:var(--mute2);font-size:13px;padding:8px 0">Nothing matches that.</div>';
+}
+function applySub(k){
+  var arr=editTarget||current.segs; var seg=RZ.catalogSeg(k); if(!seg||!arr[editIdx]) return;
+  arr[editIdx]=seg;
+  if(arr===current.segs){ current._edited=true; if(current.estMs!=null) current.estMs=RZ.estimateMs(current.segs); }
+  buzz(16); beep(880,.06);
+  closeOverlay(); editAfter(); toast('Swapped in '+seg.name);
+}
+function randomSub(){
+  var arr=editTarget||current.segs, s=arr[editIdx]; if(!s) return;
+  var pick=RZ.randomSwap(s.name, Math.random);
+  if(!pick){ toast('No alternative available'); return; }
+  applySub(pick.k);
+}
+function reopenEdit(){ closeOverlay(); openSegEditOn(editTarget||current.segs, editIdx, editAfter); }
+
 function bump(id,d){ var el=document.getElementById(id); if(!el)return; var v=(+el.value||0)+d; el.value=Math.max(0,v); buzz(6); }
 function saveSegEdit(){
   var arr=editTarget||current.segs; var s=arr[editIdx]; if(!s){ closeOverlay(); return; }
@@ -1460,10 +2177,12 @@ function startRace(){
   document.getElementById('clkLabel').textContent = (R.isAmrap||R.isEmom) ? 'Time left' : (mode==='target'?'Target left':'Elapsed');
   document.getElementById('pauseBtn').textContent='Pause';
   buildProgress(); renderTile(); renderLiveSplits(); requestWake();
+  document.querySelectorAll('.mutebtn').forEach(function(b){ b.classList.toggle('on',muted); b.innerHTML = muted?icon('muted',20):icon('sound',20); });
   if(settings.countdown){ runCountdown(function(){ beginTiming(); }); } else { beginTiming(); }
   go('race');
 }
-function beginTiming(){ R.startTs=performance.now(); R.running=true; loop(); }
+function beginTiming(){ R.startTs=performance.now(); R.running=true; loop();
+  if(R.segs[0]) setTimeout(function(){ if(R&&R.running) coachIntro(R.segs[0]); }, 250); }
 function elapsed(){ if(!R.running) return R.pauseAccum; return (R.paused? R.pauseStart : performance.now()) - R.startTs - R.pauseAccum; }
 function segStartCum(){ return R.idx>0 ? R.taps[R.idx-1] : 0; }
 
@@ -1556,7 +2275,7 @@ function renderTile(){
     if(load) body+='<div class="load">'+load+'</div>';
   }
   body+='<div class="ghost" id="ghost"></div>';
-  body+='<div class="tap">'+(isRun?'Tap when run is done':'Tap when station is done')+'</div>';
+  if(!R.taps.length && !R.rounds) body+='<div class="tap">'+(isRun?'Tap when run is done':'Tap when station is done')+'</div>';
   t.innerHTML=body;
   R.reps=0; var rn=document.getElementById('repN'); if(rn) rn.textContent='0';
   document.getElementById('subSeg').textContent='00:00';
@@ -1575,6 +2294,7 @@ function tapTile(){
   beep(); buzz(30);
   // last split
   var lastSplit = e - segStartCum(); document.getElementById('subLast').textContent=RZ.fmt(lastSplit);
+  coachPush();
   R.idx++;
   if(R.isAmrap && R.idx>=R.segs.length){
     R.rounds++; R.idx=0; R.roundStart=e;
@@ -1584,6 +2304,7 @@ function tapTile(){
   renderLiveSplits();
   if(R.idx>=R.segs.length){ finishRace(); return; }
   renderTile();
+  setTimeout(function(){ if(R&&R.segs[R.idx]) coachIntro(R.segs[R.idx]); }, 900);
 }
 function undoTap(){
   if(!R) return;
@@ -1621,11 +2342,11 @@ function toggleDrawer(){ document.getElementById('drawer').classList.toggle('ope
 function runCountdown(cb){
   var ov=document.getElementById('overlay'); ov.className='overlay show'; var n=3;
   ov.innerHTML='<div class="go mono" id="cdN">3</div>';
-  beep(660,.12);
+  cueTick();
   var iv=setInterval(function(){ n--; var el=document.getElementById('cdN'); if(!el){ clearInterval(iv); return; }
-    if(n<=0){ clearInterval(iv); el.textContent='GO'; el.className='go mono critical'; beep(880,.25);
+    if(n<=0){ clearInterval(iv); el.textContent='GO'; el.className='go mono critical'; cueGo();
       setTimeout(function(){ ov.className='overlay'; cb(); },350); }
-    else { el.textContent=n; el.className = n<10 ? 'go mono critical' : 'go mono'; beep(660,.12); } },1000);
+    else { el.textContent=n; el.className = n<10 ? 'go mono critical' : 'go mono'; cueTick(); } },1000);
 }
 function askStop(){
   var ov=document.getElementById('overlay'); ov.className='overlay show';
@@ -1637,7 +2358,7 @@ function teardownRace(){ if(raf)cancelAnimationFrame(raf); raf=null; R=null; rel
 
 /* ---------- finish ---------- */
 function finishRace(){
-  if(raf)cancelAnimationFrame(raf); raf=null; R.running=false; releaseWake();
+  if(raf)cancelAnimationFrame(raf); raf=null; R.running=false; releaseWake(); coachFinish();
   var segments=[], prev=0;
   for(var i=0;i<Math.min(R.segs.length, R.taps.length);i++){ var cum=R.taps[i]; var sg=R.segs[i];
     var dist = (sg.type==='run'||sg.unit==='m') ? sg.value : null;
@@ -1851,27 +2572,32 @@ function renderRecords(){
 }
 
 /* ---------- builder ---------- */
-var bWork=null, bCat='Cardio';
-function newBuild(){ bWork={ id:'c'+Date.now(), kind:'CUSTOM', name:'', sub:'Custom workout', division:false, target:45*60000, _custom:true, segs:[] }; bCat='Cardio'; renderBuilder(); go('builder'); }
+var bWork=null;
+function newBuild(){ bWork={ id:'c'+Date.now(), kind:'CUSTOM', name:'', sub:'Custom workout', division:false, target:45*60000, _custom:true, segs:[] };
+  var ps=document.getElementById('palSearch'); if(ps) ps.value='';
+  renderBuilder(); go('builder'); }
 function loadBuild(w){ bWork=JSON.parse(JSON.stringify(w)); }
-function setBCat(c){ bCat=c; renderBuilder(); }
 function renderBuilder(){
   if(!bWork) newBuild();
   document.getElementById('bName').value=bWork.name||'';
-  // category pills
-  var ch=''; RZ.CAT_ORDER.forEach(function(c){ ch+='<div class="pill'+(c===bCat?' on':'')+'" onclick="setBCat(\''+c+'\')">'+c+'</div>'; });
-  document.getElementById('catPills').innerHTML=ch;
-  // icon palette (search overrides category)
-  var q=(document.getElementById('palSearch')||{}).value||'';
-  q=q.trim().toLowerCase();
-  document.getElementById('catPills').style.display = q?'none':'flex';
-  var list = q ? RZ.CATALOG.filter(function(m){ return m.name.toLowerCase().indexOf(q)>=0 || m.cat.toLowerCase().indexOf(q)>=0; })
-               : RZ.CATALOG.filter(function(m){ return m.cat===bCat; });
-  var ph='';
-  if(q && !list.length) ph='<div style="grid-column:1/-1; color:var(--mute2); font-size:13px; padding:10px 0">No movement matches “'+q.replace(/</g,'&lt;')+'”.</div>';
-  list.forEach(function(m){
-    ph+='<div class="ptile" id="pt-'+m.k+'" onclick="addFromPalette(\''+m.k+'\')">'+icon(m.icon,28)+'<span>'+m.name+'</span></div>';
+  // one continuous palette: every category listed with a heading, scroll and tap
+  var q=((document.getElementById('palSearch')||{}).value||'').trim().toLowerCase();
+  var ph='', shown=0;
+  RZ.CAT_ORDER.forEach(function(cat){
+    var list=RZ.CATALOG.filter(function(m){
+      if(m.cat!==cat) return false;
+      if(!q) return true;
+      return m.name.toLowerCase().indexOf(q)>=0 || m.cat.toLowerCase().indexOf(q)>=0;
+    });
+    if(!list.length) return;
+    shown+=list.length;
+    ph+='<div class="palhead">'+cat+'<span>'+list.length+'</span></div><div class="palette">';
+    list.forEach(function(m){
+      ph+='<div class="ptile" id="pt-'+m.k+'" onclick="addFromPalette(\''+m.k+'\')">'+icon(m.icon,28)+'<span>'+m.name+'</span></div>';
+    });
+    ph+='</div>';
   });
+  if(!shown) ph='<div style="color:var(--mute2); font-size:13px; padding:14px 0">No movement matches “'+q.replace(/</g,'&lt;')+'”.</div>';
   document.getElementById('palette').innerHTML=ph;
   // segment list
   var h=''; if(!bWork.segs.length) h='<div style="color:var(--mute2);font-size:13px;padding:8px 0">Nothing yet — tap an icon above to add your first movement.</div>';
@@ -1925,6 +2651,22 @@ function renderSettings(){
   syncPills();
   document.querySelectorAll('#setGender [data-g]').forEach(function(p){ p.classList.toggle('on',p.dataset.g===settings.gender); });
   document.querySelectorAll('#setGender [data-d]').forEach(function(p){ p.classList.toggle('on',p.dataset.d===settings.division); });
+  document.querySelectorAll('#coachPills .pill').forEach(function(p){ p.classList.toggle('on', p.dataset.coach===(settings.coach||'off')); });
+  var cd=document.getElementById('coachDesc');
+  if(cd){ cd.textContent = (COACH[settings.coach]||COACH.off).desc + (('speechSynthesis' in window)?'':' (this browser has no speech support)'); }
+  var er=document.getElementById('explicitRow');
+  if(er){ er.style.display = settings.coach==='hard'?'flex':'none';
+    document.getElementById('swExplicit').classList.toggle('on', !!settings.explicit); }
+  var ps=document.getElementById('packStatus'); if(ps) ps.innerHTML=vpStatusHTML();
+  renderVoicePicker();
+  var sw=document.getElementById('studioWhy');
+  if(sw){ sw.textContent = vpOk
+    ? 'Prefer a real human voice, or an Australian accent? Record the lines yourself and they will play instead of the pack.'
+    : 'Device voices are synthetic and there is a limit to how human they can sound. For a real voice, record the lines yourself.'; }
+  var se=document.getElementById('studioEntry');
+  if(se){ se.style.display = (settings.coach&&settings.coach!=='off')?'block':'none';
+    var n=clipCount(settings.coach);
+    document.getElementById('clipSummary').textContent = n? (n+' line'+(n===1?'':'s')+' recorded — these play instead of the device voice.') : 'No recordings yet.'; }
   ['sound','haptics','wakelock','countdown'].forEach(function(k){ var id={sound:'swSound',haptics:'swHap',wakelock:'swWake',countdown:'swCd'}[k];
     document.getElementById(id).classList.toggle('on',!!settings[k]); });
   document.getElementById('storeStatus').innerHTML = Store.persistent
@@ -1932,15 +2674,403 @@ function renderSettings(){
     : '⚠ This browser is blocking storage, so races won\'t persist between sessions. Installed from your own site it will save normally.';
   var vl=document.getElementById('verLine'); if(vl) vl.textContent='v'+APP_VERSION+(swReady?' · installed':' · running in browser');
 }
+function setCoach(m){
+  settings.coach = COACH[m] ? m : 'off';
+  saveSettings(); pickedVoice=null; initVoices(); renderSettings();
+  if(settings.coach!=='off') previewCoach();
+}
+function renderVoicePicker(){
+  var wrap=document.getElementById('voicePickWrap'); if(!wrap) return;
+  var on = settings.coach && settings.coach!=='off' && !vpOk;   // only matters as a fallback
+  wrap.style.display = on?'block':'none';
+  if(!on) return;
+  var sel=document.getElementById('voicePick'), hint=document.getElementById('voiceHint');
+  var list=rankedVoices(settings.coach==='hard');
+  if(!list.length){
+    sel.innerHTML='<option>No voices available yet</option>';
+    hint.textContent='Your device has not reported any voices. Try reopening the app.';
+    return;
+  }
+  var cur=(settings.voice&&settings.voice[settings.coach])||(pickedVoice&&pickedVoice.voiceURI)||'';
+  sel.innerHTML='<option value="">Best available (recommended)</option>'+list.map(function(v){
+    var tag = voiceQuality(v)>=30?' ★':(voiceQuality(v)<0?' (basic)':'');
+    return '<option value="'+(v.voiceURI||v.name).replace(/"/g,'')+'"'+(((v.voiceURI===cur)||(v.name===cur))?' selected':'')+'>'+v.name+' · '+v.lang+tag+'</option>';
+  }).join('');
+  var best=list[0];
+  var robotic=isRobotic(pickedVoice);
+  var starred=list.filter(function(v){ return voiceQuality(v)>=30; }).length;
+  hint.innerHTML = 'Using <b>'+((pickedVoice&&pickedVoice.name)||'default')+'</b>. '+
+    (starred? ('★ marks the higher quality voices on your device.')
+            : ('Only basic voices found. '+voiceHelp()));
+  if(robotic && starred===0) hint.innerHTML += ' <b>That is why it sounds robotic.</b>';
+}
+function voiceHelp(){
+  var ua=navigator.userAgent||'';
+  if(/iPhone|iPad|iPod/i.test(ua))
+    return 'For a far better voice: iOS Settings → Accessibility → Spoken Content → Voices → English, and download one marked Enhanced or Premium. Then come back and pick it here.';
+  if(/Android/i.test(ua))
+    return 'For a far better voice: Android Settings → System → Languages &amp; input → Text-to-speech, choose Google Speech Services, and install the higher quality English voice data. Then pick it here.';
+  return 'Installing additional system voices in your OS settings will give a much more natural result.';
+}
+function setVoice(uri){
+  settings.voice=settings.voice||{};
+  if(uri) settings.voice[settings.coach]=uri; else delete settings.voice[settings.coach];
+  saveSettings(); pickedVoice=null; initVoices(); renderVoicePicker();
+  previewCoach();
+}
+function toggleExplicit(){ settings.explicit=!settings.explicit; saveSettings(); renderSettings(); if(settings.coach==='hard') previewCoach(); }
+function previewCoach(){
+  var pack=COACH[settings.coach];
+  if(!pack || settings.coach==='off'){ toast('Coach voice is off'); return; }
+  var wasMuted=muted; muted=false;
+  // route through the same path a workout uses, so the preview matches reality
+  var lines=pack.push, kind='push';
+  if(useExplicit() && pack.explicit && Math.random()<0.5){ lines=pack.explicit; kind='explicit'; }
+  var i=Math.floor(Math.random()*lines.length);
+  speakLine(settings.coach, kind, i, lines[i]);
+  muted=wasMuted;
+}
 function toggleSet(k){ settings[k]=!settings[k]; saveSettings(); renderSettings(); }
 
+/* ---------- recorded clip store (IndexedDB; audio blobs are too big for localStorage) ---------- */
+var CLIPDB=null, clipIndex={};   // key -> true, kept in localStorage for fast lookup
+function clipDB(){
+  return new Promise(function(res,rej){
+    if(CLIPDB) return res(CLIPDB);
+    if(!('indexedDB' in window)) return rej('no idb');
+    var rq=indexedDB.open('redline-clips',1);
+    rq.onupgradeneeded=function(e){ var db=e.target.result;
+      if(!db.objectStoreNames.contains('clips')) db.createObjectStore('clips'); };
+    rq.onsuccess=function(e){ CLIPDB=e.target.result; res(CLIPDB); };
+    rq.onerror=function(){ rej('idb open failed'); };
+  });
+}
+function clipPut(key, blob){
+  return clipDB().then(function(db){
+    return new Promise(function(res,rej){
+      var tx=db.transaction('clips','readwrite');
+      tx.objectStore('clips').put(blob, key);
+      tx.oncomplete=function(){ clipIndex[key]=1; Store.set('rz.clipIndex', clipIndex); res(true); };
+      tx.onerror=function(){ rej('put failed'); };
+    });
+  });
+}
+function clipGet(key){
+  return clipDB().then(function(db){
+    return new Promise(function(res,rej){
+      var tx=db.transaction('clips','readonly');
+      var rq=tx.objectStore('clips').get(key);
+      rq.onsuccess=function(){ res(rq.result||null); };
+      rq.onerror=function(){ rej('get failed'); };
+    });
+  });
+}
+function clipDel(key){
+  return clipDB().then(function(db){
+    return new Promise(function(res){
+      var tx=db.transaction('clips','readwrite');
+      tx.objectStore('clips').delete(key);
+      tx.oncomplete=function(){ delete clipIndex[key]; Store.set('rz.clipIndex', clipIndex); res(true); };
+      tx.onerror=function(){ res(false); };
+    });
+  });
+}
+function clipKey(mode, kind, i){ return mode+':'+kind+':'+i; }
+function hasClip(key){ return !!clipIndex[key]; }
+function clipCount(mode){
+  var n=0; for(var k in clipIndex){ if(k.indexOf(mode+':')===0) n++; } return n;
+}
+var clipAudio=null;
+function playClip(key, onEnd){
+  return clipGet(key).then(function(blob){
+    if(!blob){ if(onEnd) onEnd(false); return false; }
+    try{
+      if(clipAudio){ try{ clipAudio.pause(); }catch(e){} URL.revokeObjectURL(clipAudio.src); }
+      clipAudio=new Audio(URL.createObjectURL(blob));
+      clipAudio.onended=function(){ if(onEnd) onEnd(true); };
+      clipAudio.play();
+      return true;
+    }catch(e){ if(onEnd) onEnd(false); return false; }
+  }).catch(function(){ if(onEnd) onEnd(false); return false; });
+}
+function stopClip(){ if(clipAudio){ try{ clipAudio.pause(); clipAudio.currentTime=0; }catch(e){} } }
+
+/* ---------- bundled neural voice pack ----------
+   Pre-rendered audio shipped with the app. Falls back to the device voice
+   when a clip is missing, or when running as a single file with no /voice folder. */
+var VP=null, vpOk=false, vpAudio=null;
+var vpState='loading';
+function vpEmbedded(){ return (typeof VPACK!=='undefined' && typeof VPMAN!=='undefined'); }
+function vpLoad(){
+  if(!settings.pack){ vpState='disabled'; return; }
+  if(vpEmbedded()){ VP=VPMAN; vpOk=true; vpState='embedded'; vpRefresh(); return; }
+  if(typeof fetch!=='function'){ vpState='nofetch'; return; }
+  if(location.protocol==='file:' || location.protocol==='content:'){
+    vpState='localfile'; vpRefresh(); return;         // relative fetch cannot work here
+  }
+  try{
+  fetch('voice/manifest.json').then(function(r){ return r.ok?r.json():null; })
+    .then(function(m){
+      if(m){ VP=m; vpOk=true; vpState='ok'; } else { vpState='missing'; }
+      vpRefresh();
+    })
+    .catch(function(){ vpOk=false; vpState='missing'; vpRefresh(); });
+  }catch(e){ vpOk=false; vpState='missing'; vpRefresh(); }
+}
+function vpRefresh(){ if(currentScreen==='settings') renderSettings(); }
+function vpStatusHTML(){
+  if(vpState==='ok' || vpState==='embedded'){
+    var how = vpState==='embedded' ? 'Built into this file, so it works anywhere, even offline.' : 'Loaded from the voice folder.';
+    return '<div class="packok"><b>✓ Neural voice pack active</b><span>'+how+' Coach audio is real recorded speech, not your phone\'s robot voice.</span></div>';
+  }
+  var why, fix;
+  if(vpState==='localfile'){
+    why='You opened the single REDLINE.html file directly, so the voice pack folder next to it cannot be read.';
+    fix='Upload the full site folder to GitHub Pages and open it from that web address. The pack loads automatically.';
+  } else if(vpState==='disabled'){
+    why='The voice pack is switched off.'; fix='Turn it back on below.';
+  } else {
+    why='The voice/ folder was not found next to this page.';
+    fix='Make sure the whole voice/ folder was uploaded alongside index.html, then reload.';
+  }
+  return '<div class="packbad"><b>Neural voice pack not loaded</b><span>'+why+'<br><br><b>Fix:</b> '+fix+'</span></div>';
+}
+function vpUrl(name){
+  if(vpEmbedded() && VPACK[name]) return 'data:audio/mpeg;base64,'+VPACK[name];
+  return 'voice/'+name+'.mp3';
+}
+function vpHasFile(name){ return vpEmbedded() ? !!VPACK[name] : true; }
+function vpPlaySeq(files, done){
+  if(!files.length){ if(done) done(true); return; }
+  var i=0;
+  function next(){
+    if(i>=files.length){ if(done) done(true); return; }
+    var f=files[i++];
+    if(!vpHasFile(f)){ next(); return; }
+    try{
+      if(vpAudio){ try{ vpAudio.pause(); }catch(e){} }
+      vpAudio=new Audio(vpUrl(f));
+      vpAudio.onended=next;
+      vpAudio.onerror=function(){ next(); };     // skip a missing piece rather than stalling
+      var p=vpAudio.play();
+      if(p&&p.catch) p.catch(function(){ if(done) done(false); });
+    }catch(e){ if(done) done(false); }
+  }
+  next();
+}
+function vpStop(){ if(vpAudio){ try{ vpAudio.pause(); vpAudio.currentTime=0; }catch(e){} } }
+function vpHasLine(mode,kind,i){
+  return !!(vpOk && VP.counts && VP.counts[mode] && VP.counts[mode][kind] && i<VP.counts[mode][kind]);
+}
+function nearest(arr,v){
+  if(!arr||!arr.length) return null;
+  var best=arr[0];
+  for(var i=0;i<arr.length;i++){ if(Math.abs(arr[i]-v)<Math.abs(best-v)) best=arr[i]; }
+  return best===v?best:null;   // only use an exact match; never announce the wrong number
+}
+/* Stitch an intro from pre-rendered pieces: movement name + amount + a tail line. */
+function vpIntroFiles(mode, seg){
+  if(!vpOk || !VP.names) return null;
+  var files=[];
+  var label = seg.type==='run' ? 'Run' : seg.name;
+  var nameKey = VP.names[label];
+  if(!nameKey) return null;
+  files.push(mode+'-'+nameKey);
+  var amount=null;
+  if(seg.type==='run' || seg.unit==='m'){ var d=nearest(VP.dists, seg.value); if(d!=null) amount=mode+'-d_'+d; }
+  else if(seg.unit==='reps'){ var r=nearest(VP.reps, seg.value); if(r!=null) amount=mode+'-r_'+r; }
+  else if(seg.unit==='sets'){ var s=nearest(VP.sets, seg.value); if(s!=null) amount=mode+'-s_'+s; }
+  if(amount) files.push(amount);
+  var nt=(VP.tails&&VP.tails[mode])||0;
+  if(nt>0) files.push(mode+'-tail_'+Math.floor(Math.random()*nt));
+  return files;
+}
+
+/* ---------- coach voice engine ---------- */
+var voiceReady=false, pickedVoice=null;
+function allVoices(){
+  if(!('speechSynthesis' in window)) return [];
+  try{ return speechSynthesis.getVoices()||[]; }catch(e){ return []; }
+}
+/* Phones ship a cheap "compact" voice alongside much better enhanced/neural ones.
+   getVoices() often lists the robotic one first, so score for quality explicitly. */
+function voiceQuality(v){
+  var id=((v.name||'')+' '+(v.voiceURI||'')).toLowerCase(), s=0;
+  if(/premium|enhanced|neural|natural|wavenet|studio/.test(id)) s+=40;   // the good downloads
+  if(/siri/.test(id)) s+=32;
+  if(/google/.test(id)) s+=18;                                           // Android's Google voices are solid
+  if(/compact|eloquence|espeak|pico/.test(id)) s-=45;                    // the robotic ones
+  if(/novelty|whisper|bells|bad news|good news|bubbles|jester|organ|cellos|zarvox|trinoids|boing|deranged|hysterical|deranged/.test(id)) s-=80;
+  return s;
+}
+function voiceScore(v, wantMale){
+  var n=((v.name||'')+' '+(v.voiceURI||'')).toLowerCase();
+  var lang=(v.lang||'').toLowerCase().replace('_','-');
+  var s=voiceQuality(v);
+  if(lang.indexOf('en')===0) s+=25; else s-=60;                          // must be English
+  if(/^en-au/.test(lang)) s+=6; else if(/^en-gb/.test(lang)) s+=4;        // local accent first
+  var male=/\bmale\b|daniel|alex|fred|george|james|arthur|rishi|oliver|thomas|gordon|lee|aaron|reed|rocko|eddy|guy|ryan|brian/.test(n) && !/female/.test(n);
+  var female=/\bfemale\b|samantha|karen|moira|tessa|fiona|serena|catherine|victoria|ava|allison|susan|zoe|nicky|martha|jenny|aria|sonia/.test(n);
+  if(wantMale && male) s+=14;
+  if(!wantMale && female) s+=14;
+  if(wantMale && female) s-=10;
+  if(!wantMale && male) s-=10;
+  return s;
+}
+function rankedVoices(wantMale){
+  return allVoices().slice()
+    .filter(function(v){ return (v.lang||'').toLowerCase().indexOf('en')===0; })
+    .sort(function(a,b){ return voiceScore(b,wantMale)-voiceScore(a,wantMale); });
+}
+function initVoices(){
+  if(!('speechSynthesis' in window)) return;
+  var vs=allVoices(); if(!vs.length) return;
+  voiceReady=true;
+  // an explicit user choice always wins
+  var savedURI = settings.voice && settings.voice[settings.coach];
+  if(savedURI){
+    var found=vs.filter(function(v){ return v.voiceURI===savedURI || v.name===savedURI; })[0];
+    if(found){ pickedVoice=found; return; }
+  }
+  var ranked=rankedVoices(settings.coach==='hard');
+  pickedVoice = ranked[0] || vs[0] || null;
+}
+function isRobotic(v){ return v && voiceQuality(v) < 0; }
+if('speechSynthesis' in window){
+  try{
+    speechSynthesis.onvoiceschanged=function(){
+      pickedVoice=null; initVoices();
+      if(currentScreen==='settings') renderVoicePicker();   // list can arrive late
+    };
+    initVoices();
+    // some engines only populate after a first call; nudge them
+    setTimeout(function(){ if(!allVoices().length){ try{ speechSynthesis.getVoices(); }catch(e){} }
+      initVoices(); if(currentScreen==='settings') renderVoicePicker(); }, 600);
+  }catch(e){}
+}
+function say(text, opts){
+  if(!text) return;
+  if(muted || !settings.coach || settings.coach==='off') return;
+  if(!('speechSynthesis' in window)) return;
+  var pack=COACH[settings.coach]; if(!pack) return;
+  try{
+    if(opts&&opts.interrupt) speechSynthesis.cancel();
+    if(!pickedVoice) initVoices();
+    var u=new SpeechSynthesisUtterance(humanise(text));
+    if(pickedVoice) u.voice=pickedVoice;
+    // small random variation stops every line sounding identically machine-stamped
+    var vr=(Math.random()-0.5)*0.06, vp=(Math.random()-0.5)*0.05;
+    u.rate=Math.max(0.5, Math.min(1.6, (pack.rate||1)+vr));
+    u.pitch=Math.max(0.3, Math.min(1.8, (pack.pitch||1)+vp));
+    u.volume=1;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+/* Engines run clauses together, which is most of what makes them sound robotic.
+   Commas and ellipses buy breathing room, so add a little punctuation. */
+function humanise(t){
+  if(!t) return t;
+  t=String(t);
+  t=t.replace(/!\s+/g, '! ');                    // keep exclamation punch
+  t=t.replace(/\.\s+/g, '. ');
+  t=t.replace(/\s+-\s+/g, ', ');
+  return t;
+}
+function stopSpeech(){ try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){} }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function useExplicit(){ return !!(settings.explicit && settings.coach==='hard'); }
+function coachIntro(seg){
+  var pack=COACH[settings.coach]; if(!pack||!pack.intro) return;
+  var label = seg.type==='run' ? 'Run' : seg.name;
+  var detail = seg.type==='run' ? (seg.value+' metres')
+    : (seg.unit==='reps' ? (seg.value+' reps')
+    : (seg.unit==='sets' ? (seg.value+' sets of '+seg.reps)
+    : (seg.unit==='rest' ? 'rest' : (seg.value+' metres'))));
+  if(settings.pack && vpOk){
+    var files=vpIntroFiles(settings.coach, seg);
+    if(files && files.length){ stopSpeech(); vpStop();
+      vpPlaySeq(files, function(okPlayed){ if(!okPlayed) say(pack.intro(label, detail, useExplicit()), {interrupt:true}); });
+      return; }
+  }
+  say(pack.intro(label, detail, useExplicit()), {interrupt:true});
+}
+/* Prefer a real recorded clip when one exists; fall back to the device voice. */
+function speakLine(mode, kind, idx, text){
+  if(muted || !settings.coach || settings.coach==='off') return;
+  var key=clipKey(mode, kind, idx);
+  if(hasClip(key)){ stopSpeech(); vpStop(); playClip(key, function(okPlayed){ if(!okPlayed) say(text); }); return; }
+  if(settings.pack && vpHasLine(mode,kind,idx)){
+    stopSpeech();
+    vpPlaySeq([mode+'-'+kind+'-'+idx], function(okPlayed){ if(!okPlayed) say(text); });
+    return;
+  }
+  say(text, {interrupt:(kind==='intro')});
+}
+function coachPush(){
+  var pack=COACH[settings.coach]; if(!pack||!pack.push) return;
+  var lines=pack.push, kind='push';
+  if(useExplicit() && pack.explicit){
+    // explicit tier lands often without dominating
+    if(Math.random()<0.5){ lines=pack.explicit; kind='explicit'; }
+  }
+  var i=Math.floor(Math.random()*lines.length);
+  speakLine(settings.coach, kind, i, lines[i]);
+}
+function coachFinish(){
+  var pack=COACH[settings.coach]; if(!pack||!pack.finish) return;
+  var kind='finish', lines=pack.finish;
+  if(useExplicit() && pack.finishX && Math.random()<0.4){ kind='finishX'; lines=pack.finishX; }
+  var i=Math.floor(Math.random()*lines.length);
+  speakLine(settings.coach, kind, i, lines[i]);
+}
+
 /* ---------- feedback: audio + haptics + wakelock ---------- */
+var muted=false;
+function toggleMute(){
+  muted=!muted;
+  if(muted){ stopSpeech(); vpStop(); stopClip(); }
+  document.querySelectorAll('.mutebtn').forEach(function(b){
+    b.classList.toggle('on', muted);
+    b.innerHTML = muted ? icon('muted',20) : icon('sound',20);
+  });
+  toast(muted?'Sound off':'Sound on');
+  buzz(10);
+}
 function ensureAudio(){ if(!audioCtx){ try{ audioCtx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } }
-function beep(freq,dur){ if(!settings.sound) return; ensureAudio(); if(!audioCtx)return;
-  try{ var o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.type='square'; o.frequency.value=freq||880;
-  g.gain.value=.06; o.connect(g); g.connect(audioCtx.destination); o.start();
-  g.gain.exponentialRampToValueAtTime(.0001, audioCtx.currentTime+(dur||.09)); o.stop(audioCtx.currentTime+(dur||.09)); }catch(e){} }
-function buzz(ms){ if(settings.haptics && navigator.vibrate) try{ navigator.vibrate(ms); }catch(e){} }
+/* Soft bell-ish tone: sine fundamental + quiet octave, gentle attack and long decay.
+   Warmer and rounder than the old square wave, and it carries across a room. */
+function tone(freq, dur, opts){
+  if(muted || !settings.sound) return;
+  ensureAudio(); if(!audioCtx) return;
+  opts=opts||{};
+  try{
+    var t0=audioCtx.currentTime, d=dur||0.22, vol=(opts.vol!=null?opts.vol:0.5);
+    var out=audioCtx.createGain();
+    out.gain.setValueAtTime(0.0001, t0);
+    out.gain.exponentialRampToValueAtTime(0.22*vol, t0+0.018);      // soft attack, no click
+    out.gain.exponentialRampToValueAtTime(0.0001, t0+d);            // long natural decay
+    out.connect(audioCtx.destination);
+    var o1=audioCtx.createOscillator(); o1.type='sine'; o1.frequency.value=freq||880;
+    var g1=audioCtx.createGain(); g1.gain.value=1;
+    o1.connect(g1); g1.connect(out);
+    var o2=audioCtx.createOscillator(); o2.type='sine'; o2.frequency.value=(freq||880)*2;
+    var g2=audioCtx.createGain(); g2.gain.value=opts.shimmer!=null?opts.shimmer:0.16;   // quiet octave adds body
+    o2.connect(g2); g2.connect(out);
+    o1.start(t0); o2.start(t0);
+    o1.stop(t0+d+0.05); o2.stop(t0+d+0.05);
+  }catch(e){}
+}
+// kept for existing callers; maps the old square beeps onto the softer tone
+function beep(freq,dur){ tone(freq||880, Math.max(dur||0.09, 0.16)); }
+// named cues so the timer reads consistently
+function cueTick(){ tone(660, 0.26, {vol:0.42, shimmer:0.10}); }            // 3-2-1 counting down
+function cueGo(){ tone(880, 0.5, {vol:0.75, shimmer:0.3});
+  setTimeout(function(){ tone(1318.5, 0.62, {vol:0.7, shimmer:0.35}); }, 90); }  // rising two-note "go"
+function cueRest(){ tone(523.25, 0.5, {vol:0.55, shimmer:0.18});
+  setTimeout(function(){ tone(392, 0.7, {vol:0.5, shimmer:0.14}); }, 110); }     // falling two-note "rest"
+function cueDone(){ [523.25, 659.25, 783.99, 1046.5].forEach(function(f,i){
+  setTimeout(function(){ tone(f, 0.9, {vol:0.6, shimmer:0.25}); }, i*130); }); } // little rising chime
+function buzz(ms){ if(!muted && settings.haptics && navigator.vibrate) try{ navigator.vibrate(ms); }catch(e){} }
 async function requestWake(){ if(!settings.wakelock||!('wakeLock'in navigator))return; try{ wakeLock=await navigator.wakeLock.request('screen'); }catch(e){} }
 function releaseWake(){ if(wakeLock){ try{wakeLock.release();}catch(e){} wakeLock=null; } }
 document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&R&&R.running) requestWake(); });
@@ -2037,6 +3167,8 @@ function checkForUpdates(){
 }
 
 /* ---------- boot ---------- */
+vpLoad();
+initNav();
 registerSW();
 renderHome();
 </script>

@@ -1,5 +1,7 @@
 # REDLINE
 
+> **IMPORTANT:** open REDLINE from your GitHub Pages **web address**, not by tapping the downloaded HTML file. Opening the single file directly means the `voice/` folder cannot be read, so the good neural coach voice is unavailable and your phone's robotic voice is used instead. Settings → Coach voice tells you which one is active.
+
 Hyrox / CrossFit / hybrid training timer. Big-tile tap-through splits, PB ghost pacer, workout generators, and a tap-to-build workout editor. Runs entirely offline, installs to your home screen like a native app.
 
 ---
@@ -12,6 +14,7 @@ Hyrox / CrossFit / hybrid training timer. Big-tile tap-through splits, PB ghost 
 ```
 index.html
 sw.js
+voice/            (266 mp3 files - the voice pack)
 manifest.json
 icon-192.png
 icon-512.png
@@ -76,17 +79,35 @@ Devices also pick up updates on their own — the service worker fetches a fresh
 
 ## What's in it
 
+**Interval timer** — a big-screen work/rest timer. Preprogram sets (4 × 45s work, 15s rest), or use a plain countdown or stopwatch. Yellow while working, red during rest. Digits scale to fill the whole screen so you can read them from across a gym, with soft chime cues counting 3-2-1 and a distinct two-note tone at each change. Presets for Tabata, EMOM and more.
+
+**Built-in voice pack** — REDLINE ships with every coach line pre-rendered by a neural text-to-speech model (the `voice/` folder, about 3.6 MB). These play instead of your phone's robotic built-in voice, and are cached for offline use after the first play. If you record your own audio, that takes priority.
+
+**Coach voice** — optional spoken coaching. Pick it right on the pre-race screen under the loads row, or in Settings. *Goggins* is ruthless — it goes after the weak voice in your head rather than you — with an optional **No filter** switch that adds swearing and harsher call-outs; *Kind* is warm and encouraging. Both announce each movement with its reps or distance, then talk to you as you tap through. Mute instantly from the workout or timer screen.
+
+> **Getting a good voice.** Phones ship a basic robotic voice plus better ones you have to install. REDLINE picks the best it can find and marks the good ones with a ★ in Settings. If they all sound robotic, install a better voice first:
+> - **iPhone:** Settings → Accessibility → Spoken Content → Voices → English → download one marked **Enhanced** or **Premium**
+> - **Android:** Settings → System → Languages & input → Text-to-speech → Google Speech Services → install the high quality English voice data
+>
+> Then reopen REDLINE and choose it under Settings → Coach voice → Voice.
+>
+> **Note for iPhone:** Safari only exposes the basic compact voices to web apps, not Siri or the Enhanced ones, so there is a real ceiling on how human it can sound.
+>
+> **Record your own voice** (Settings → Coach voice → Record your own) sidesteps all of this. Hold the button, say the line, release. Recorded lines play instead of the synthetic voice and are stored on the device. Anything not recorded falls back to the device voice, so you can do a handful at a time.
+
 **Race presets** — Halfrox and FitFest HYROX (both UniActive Wollongong sims) and full HYROX with Open/Pro loads.
 
 **Training generator** — set a duration and focus, and a five-stop slider takes you from an exact race simulation through to a pure gym day. Equipment multi-select; bodyweight always available.
 
 **CrossFit** — 14 benchmark WODs plus a generator for AMRAP, For time, Rounds for time and EMOM. AMRAP loops the round and scores by rounds completed; EMOM advances itself every minute.
 
-**Build your own** — tap movements from an icon palette (search or browse by category), drag to reorder, tap any row to edit reps, distance, sets, rest or load, and repeat the whole thing ×2/×3/×5 for rounds.
+**Build your own** — tap movements from one scrolling icon palette grouped under category headings, or search, drag to reorder, tap any row to edit reps, distance, sets, rest or load, and repeat the whole thing ×2/×3/×5 for rounds.
 
 **During a race** — one big tile per segment, tap to advance. PB ghost pacer counts down your best-ever split for that movement. Three timing modes: count-up with splits, countdown targets, or goal pace with a live projected finish.
 
 **After** — splits with run pace, PBs per workout and per station, trend charts, effort rating and notes, PNG finish card and CSV export.
+
+**Swap a movement** — tap Edit on any segment, then *Swap movement* to pick a replacement from the library, or hit the die for a random one from the same category. Works on presets, generated sessions and your own builds.
 
 **Back up / restore** — Settings → Data. Writes a JSON file of everything; restore with merge (skips duplicates) or replace. This is how you move history between devices.
 

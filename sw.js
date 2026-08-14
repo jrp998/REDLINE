@@ -1,7 +1,7 @@
 /* REDLINE service worker
    Bump CACHE_VERSION whenever you deploy a change.
    Must match APP_VERSION inside index.html. */
-const CACHE_VERSION = '1.1.0';
+const CACHE_VERSION = '1.9.3';
 const CACHE_NAME = 'redline-v' + CACHE_VERSION;
 
 const PRECACHE = [
@@ -12,7 +12,8 @@ const PRECACHE = [
   './icon-512.png',
   './icon-maskable-512.png',
   './apple-touch-icon.png',
-  './favicon.png'
+  './favicon.png',
+  './voice/manifest.json'
 ];
 
 // Install: cache the app shell, then wait (don't auto-activate).
@@ -69,6 +70,7 @@ self.addEventListener('fetch', event => {
 
   event.respondWith(
     caches.match(req).then(cached => {
+      // voice clips: once fetched they stay cached for offline use
       const network = fetch(req).then(res => {
         const copy = res.clone();
         caches.open(CACHE_NAME).then(c => c.put(req, copy)).catch(() => {});
